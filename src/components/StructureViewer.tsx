@@ -31,7 +31,7 @@ export interface StructureSource {
   path: string;
   format: 'cif' | 'vasp';
   label: string;
-  provenance: 'pormake_generated' | 'dft_relaxed';
+  provenance: 'pormake_generated' | 'dft_relaxed' | 'dft_relaxation_last_step';
 }
 
 export default function StructureViewer({ source, expectedAtoms, title }: { source: StructureSource; expectedAtoms?: number | null; title: string }) {

@@ -341,3 +341,21 @@ def test_source_repository_untouched():
         pytest.skip("source is not a git checkout")
     out = subprocess.check_output(["git", "-C", str(SOURCE), "status", "--porcelain"], text=True)
     assert out.strip() == "", f"source repository modified:\n{out}"
+
+
+@real
+def test_real_electronic_and_campaign(real_export):
+    recs = json.loads((real_export / "candidates.json").read_text())["records"]
+    acc = [r for r in recs if r["dft"]["status"] == "accepted"]
+    assert all(r["electronic"] is not None for r in acc)
+    assert all(r["electronic"] is None for r in recs if r["dft"]["status"] != "accepted")
+    for r in acc:
+        for side in ("vb", "cb"):
+            assert abs(sum(r["electronic"][side].values()) - 1) < 0.02
+    assert all(r["dft_last_geometry"] is None for r in acc)
+    camp = json.loads((real_export / "campaign.json").read_text())
+    assert sum(i["accepted"] for i in camp["iterations"]) == len(acc)
+    assert {f["id"] for f in camp["failures"]} == {r["id"] for r in recs if r["dft"]["status"] in ("rejected", "ambiguous")}
+    retro = json.loads((real_export / "retro-al.json").read_text())
+    labels = [p["labels"] for p in retro["curves"]["paper"]]
+    assert labels == sorted(labels) and 27 in labels

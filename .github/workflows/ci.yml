@@ -47,6 +47,9 @@ jobs:
           diff -q /tmp/export/data/candidates.json public/data/candidates.json
           diff -q /tmp/export/data/active-learning.json public/data/active-learning.json
           diff -rq /tmp/export/data/structures public/data/structures
+          diff -rq /tmp/export/data/electronic public/data/electronic
+          diff -q /tmp/export/data/campaign.json public/data/campaign.json
+          diff -q /tmp/export/data/retro-al.json public/data/retro-al.json
 
       - name: Python tests (exporter, replay, cross-check vs original acquisition code)
         env:

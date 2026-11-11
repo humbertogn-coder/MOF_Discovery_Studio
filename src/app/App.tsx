@@ -12,6 +12,7 @@ import { Loading } from '../components/ui';
 const Compare = lazy(() => import('../pages/Compare'));
 const ActiveLearning = lazy(() => import('../pages/ActiveLearning'));
 const Methods = lazy(() => import('../pages/Methods'));
+const DftCampaign = lazy(() => import('../pages/DftCampaign'));
 
 export default function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="compare" element={<Compare />} />
                 <Route path="active-learning" element={<ActiveLearning />} />
                 <Route path="methods" element={<Methods />} />
+                <Route path="dft-campaign" element={<DftCampaign />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

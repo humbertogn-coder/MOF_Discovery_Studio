@@ -1,0 +1,341 @@
+{
+ "schema_version": "1.1.0",
+ "iterations": [
+  {
+   "iteration": 0,
+   "submitted": 11,
+   "accepted": 6,
+   "not_accepted": 5,
+   "accepted_conditional": 4
+  },
+  {
+   "iteration": 1,
+   "submitted": 8,
+   "accepted": 6,
+   "not_accepted": 2,
+   "accepted_conditional": 1
+  },
+  {
+   "iteration": 2,
+   "submitted": 8,
+   "accepted": 6,
+   "not_accepted": 2,
+   "accepted_conditional": 1
+  }
+ ],
+ "compute": [
+  {
+   "iteration": 0,
+   "cluster": "FASTER",
+   "jobs": 5,
+   "wall_h": 4.0,
+   "core_h": 268.0
+  },
+  {
+   "iteration": 0,
+   "cluster": "Grace",
+   "jobs": 23,
+   "wall_h": 329.0,
+   "core_h": 15813.0
+  },
+  {
+   "iteration": 1,
+   "cluster": "FASTER",
+   "jobs": 9,
+   "wall_h": 75.0,
+   "core_h": 4782.0
+  },
+  {
+   "iteration": 2,
+   "cluster": "FASTER",
+   "jobs": 8,
+   "wall_h": 58.0,
+   "core_h": 3741.0
+  }
+ ],
+ "compute_source": "results/final/table_compute.csv (reconstructed from SLURM logs by the study)",
+ "failures": [
+  {
+   "id": "cds__Zn-N153__short-H",
+   "slug": "cds__Zn-N153__short-H",
+   "iteration": 0,
+   "topology": "cds",
+   "metal": "Zn",
+   "node_family": "M2(CO2)4-paddlewheel",
+   "substituent": "H",
+   "n_atoms": 68,
+   "outcome": "collapse/shear",
+   "reasons": [
+    "excluded: framework shear in DFT relaxation (volume -15 %, cell angle change 25 deg)",
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError",
+    "framework collapse/shear (dV -15 %, dangle 25 deg)"
+   ],
+   "vol_change_pct": -14.8,
+   "max_angle_change_deg": 24.8,
+   "mu_at_selection_eV": 2.2188309421702526,
+   "has_last_geometry": true
+  },
+  {
+   "id": "dia__Ni-N649__short-NH2",
+   "slug": "dia__Ni-N649__short-NH2",
+   "iteration": 0,
+   "topology": "dia",
+   "metal": "Ni",
+   "node_family": "M2(CO2)4-tetrahedral",
+   "substituent": "NH2",
+   "n_atoms": 304,
+   "outcome": "SCF not converged (relaxation)",
+   "reasons": [
+    "excluded: SCF did not converge (NELM reached in 5 of 8 ionic steps",
+    "8 steps in 24 h even after CHGNet pre-relaxation)",
+    "excluded for cost",
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError"
+   ],
+   "vol_change_pct": 1.2,
+   "max_angle_change_deg": 0.1,
+   "mu_at_selection_eV": 0.8809030614429648,
+   "has_last_geometry": true
+  },
+  {
+   "id": "nbo__Co-N317__short-F4",
+   "slug": "nbo__Co-N317__short-F4",
+   "iteration": 0,
+   "topology": "nbo",
+   "metal": "Co",
+   "node_family": "M2(CO2)4-paddlewheel",
+   "substituent": "F4",
+   "n_atoms": 204,
+   "outcome": "unstable relaxation",
+   "reasons": [
+    "excluded: unstable relaxation (ZBRENT fatal error after 27 steps in 22 h",
+    "total moment 34 -> 12 muB",
+    "Fmax 2.6 eV/A at restart)",
+    "excluded for cost",
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError"
+   ],
+   "vol_change_pct": 0.7,
+   "max_angle_change_deg": 0.1,
+   "mu_at_selection_eV": 0.7136317325731303,
+   "has_last_geometry": true
+  },
+  {
+   "id": "pcu__Mn-N548__short-H",
+   "slug": "pcu__Mn-N548__short-H",
+   "iteration": 0,
+   "topology": "pcu",
+   "metal": "Mn",
+   "node_family": "M3(CO2)6",
+   "substituent": "H",
+   "n_atoms": 51,
+   "outcome": "collapse/shear",
+   "reasons": [
+    "excluded: framework collapse in DFT relaxation (volume -51 %, cell angle change 24 deg)",
+    "relax unreadable: IndexError",
+    "static unreadable: FileNotFoundError"
+   ],
+   "vol_change_pct": null,
+   "max_angle_change_deg": null,
+   "mu_at_selection_eV": 0.7521231152252894,
+   "has_last_geometry": true
+  },
+  {
+   "id": "pcu__Mn-N548__short-Nring1",
+   "slug": "pcu__Mn-N548__short-Nring1",
+   "iteration": 0,
+   "topology": "pcu",
+   "metal": "Mn",
+   "node_family": "M3(CO2)6",
+   "substituent": "Nring1",
+   "n_atoms": 48,
+   "outcome": "collapse/shear",
+   "reasons": [
+    "excluded: framework collapse in DFT relaxation (volume -49 %, cell angle change 23 deg)",
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError",
+    "framework collapse/shear (dV -49 %, dangle 23 deg)"
+   ],
+   "vol_change_pct": -49.0,
+   "max_angle_change_deg": 22.6,
+   "mu_at_selection_eV": 0.6423924219108181,
+   "has_last_geometry": true
+  },
+  {
+   "id": "bcu__Fe-N350__short-H",
+   "slug": "bcu__Fe-N350__short-H",
+   "iteration": 1,
+   "topology": "bcu",
+   "metal": "Fe",
+   "node_family": "M4(CO2)8",
+   "substituent": "H",
+   "n_atoms": 136,
+   "outcome": "collapse/shear",
+   "reasons": [
+    "excluded: framework collapse in DFT relaxation (volume -25 % after 600 ionic steps",
+    "CONTCAR)",
+    "relax unreadable: IndexError",
+    "static unreadable: FileNotFoundError"
+   ],
+   "vol_change_pct": null,
+   "max_angle_change_deg": null,
+   "mu_at_selection_eV": 0.3718423097091542,
+   "has_last_geometry": true
+  },
+  {
+   "id": "cds__Mn-N288__short-F4",
+   "slug": "cds__Mn-N288__short-F4",
+   "iteration": 1,
+   "topology": "cds",
+   "metal": "Mn",
+   "node_family": "M2(CO2)4-paddlewheel",
+   "substituent": "F4",
+   "n_atoms": 68,
+   "outcome": "collapse/shear",
+   "reasons": [
+    "excluded: framework collapse in DFT relaxation (volume -21 % and still decreasing after 126 ionic steps",
+    "gap drifting 1.5-1.8 eV)",
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError",
+    "framework collapse/shear (dV -21 %, dangle 9 deg)"
+   ],
+   "vol_change_pct": -20.9,
+   "max_angle_change_deg": 8.7,
+   "mu_at_selection_eV": 0.6841905523094521,
+   "has_last_geometry": true
+  },
+  {
+   "id": "cds__Cu-N409__long-Nring1",
+   "slug": "cds__Cu-N409__long-Nring1",
+   "iteration": 2,
+   "topology": "cds",
+   "metal": "Cu",
+   "node_family": "M2(CO2)4-paddlewheel",
+   "substituent": "Nring1",
+   "n_atoms": 104,
+   "outcome": "SCF not converged (static)",
+   "reasons": [
+    "static SCF not converged"
+   ],
+   "vol_change_pct": -0.4,
+   "max_angle_change_deg": 1.3,
+   "mu_at_selection_eV": 0.7783128660964187,
+   "has_last_geometry": true
+  },
+  {
+   "id": "cds__Fe-N355__short-NH2",
+   "slug": "cds__Fe-N355__short-NH2",
+   "iteration": 2,
+   "topology": "cds",
+   "metal": "Fe",
+   "node_family": "M2(CO2)4-paddlewheel",
+   "substituent": "NH2",
+   "n_atoms": 76,
+   "outcome": "relaxation unfinished",
+   "reasons": [
+    "relaxation not converged",
+    "static unreadable: FileNotFoundError"
+   ],
+   "vol_change_pct": 6.3,
+   "max_angle_change_deg": 2.4,
+   "mu_at_selection_eV": 0.419165587782204,
+   "has_last_geometry": true
+  }
+ ],
+ "eligibility_rules": [
+  {
+   "iteration": 1,
+   "exclude_family": [
+    "M3(CO2)6"
+   ],
+   "exclude_combo": [
+    "M2(CO2)4-paddlewheel:cds:Zn"
+   ],
+   "max_atoms": 160,
+   "n_not_yet_computed": 120,
+   "n_eligible": 42,
+   "source": "data/al/iter1/selection_rules.json"
+  },
+  {
+   "iteration": 2,
+   "exclude_family": [
+    "M3(CO2)6"
+   ],
+   "exclude_combo": [
+    "M2(CO2)4-paddlewheel:cds:Zn",
+    "M2(CO2)4-paddlewheel:cds:Mn",
+    "M4(CO2)8:bcu:Fe"
+   ],
+   "max_atoms": 160,
+   "n_not_yet_computed": 112,
+   "n_eligible": 26,
+   "source": "data/al/iter2/selection_rules.json"
+  }
+ ],
+ "spin_solutions": [
+  {
+   "id": "cds__Co-N317__short-F4",
+   "slug": "cds__Co-N317__short-F4",
+   "label_solution": "afmbs-start",
+   "label_gap_eV": 0.6679999999999997,
+   "fm_start_gap_eV": 0.1416000000000004,
+   "fm_start_converged": true,
+   "n_solutions": 2
+  },
+  {
+   "id": "cds__Cu-N409__long-F8",
+   "slug": "cds__Cu-N409__long-F8",
+   "label_solution": "afmbs-start",
+   "label_gap_eV": 0.8895999999999997,
+   "fm_start_gap_eV": 0.2494999999999994,
+   "fm_start_converged": true,
+   "n_solutions": 2
+  },
+  {
+   "id": "cds__Cu-N409__short-F4",
+   "slug": "cds__Cu-N409__short-F4",
+   "label_solution": "afmbs-start",
+   "label_gap_eV": 0.3389999999999999,
+   "fm_start_gap_eV": 0.2724000000000002,
+   "fm_start_converged": true,
+   "n_solutions": 2
+  },
+  {
+   "id": "cds__Cu-N409__short-NH2",
+   "slug": "cds__Cu-N409__short-NH2",
+   "label_solution": "afm2-start",
+   "label_gap_eV": 0.6865999999999999,
+   "fm_start_gap_eV": 0.2263999999999999,
+   "fm_start_converged": true,
+   "n_solutions": 3
+  },
+  {
+   "id": "cds__Cu-N409__short-Nring1",
+   "slug": "cds__Cu-N409__short-Nring1",
+   "label_solution": "afm2-start",
+   "label_gap_eV": 0.904,
+   "fm_start_gap_eV": 0.2567999999999997,
+   "fm_start_converged": true,
+   "n_solutions": 3
+  },
+  {
+   "id": "cds__Fe-N355__short-F4",
+   "slug": "cds__Fe-N355__short-F4",
+   "label_solution": "fm-start",
+   "label_gap_eV": 0.0457,
+   "fm_start_gap_eV": 0.0457,
+   "fm_start_converged": true,
+   "n_solutions": 2
+  },
+  {
+   "id": "cds__Fe-N355__short-Nring1",
+   "slug": "cds__Fe-N355__short-Nring1",
+   "label_solution": "fm-start",
+   "label_gap_eV": 0.03510000000000035,
+   "fm_start_gap_eV": 0.03510000000000035,
+   "fm_start_converged": true,
+   "n_solutions": 2
+  }
+ ]
+}

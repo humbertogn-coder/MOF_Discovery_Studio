@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../app/DataContext';
+import Cite from '../components/Cite';
 import { Callout, ErrorState, Loading } from '../components/ui';
 import { dataUrl, sourceBlob } from '../lib/data';
 import { shortDate } from '../lib/format';
@@ -64,12 +65,14 @@ export default function Methods() {
         <p>A label is accepted (<code>label_ok</code>) only if the relaxation and static SCF converged, the final structure passes QC, no ligand atom carries a moment above 0.3 μB and the framework did not collapse (|ΔV| ≤ 20 %, Δangle ≤ 10°). Rules are implemented in {src('scripts/08_parse_dft.py')}.</p>
         <Callout kind="warn">{G.conditional}</Callout>
         <p>Of {m.records_with_dft_run} frameworks computed, {m.records_with_accepted_dft} labels were accepted and {m.records_with_rejected_dft} were not ({m.dft_sensitivity_runs} additional spin-state sensitivity runs are attached to their parent candidate as diagnostics). Raw VASP outputs are not part of this site.</p>
+        <p>For the accepted labels the site also shows the band-edge character (states within 0.25 eV of the VBM and CBM, split into metal, μ4-O, carboxylate O and linker) and the broadened, site-projected DOS computed by the study (scripts 17 and 19). Failed calculations, compute cost, learned eligibility rules and spin-solution comparisons are summarised on the <Link to="/dft-campaign">DFT campaign</Link> page. {G.spinSolutions}</p>
       </section>
 
       <section id="al">
         <h2>5. Active learning</h2>
         <p>{G.acquisition} Score: <code>score = μ − κ·σ_tree − α / max(1, N_topo) + β·I_ood</code>, from {src('src/mofal/acquisition.py')}; batches were selected with {src('scripts/06_select_batch.py')}, which also excludes everything already sent to DFT and applies eligibility rules learned from failed calculations.</p>
         <p>The <Link to="/active-learning">Active Learning Explorer</Link> replays iterations {Object.keys(m.active_learning_replay).join(', ')} from the recorded pools and checks in the browser that the recorded batches are reproduced exactly (export-time check: {Object.entries(m.active_learning_replay).map(([k, v]) => `iteration ${k} ${v.batch_matches ? 'reproduced' : 'NOT reproduced'}`).join('; ')}). Iteration 0 has no recorded rules file; its settings (caps 3/2/3, two forced closed-shell anchors) come from the project notes and are confirmed only by the exact replay. {G.replay}</p>
+        <p>{G.retro} Its summary statistics, computed by the study with <code>scripts/15_retrospective_al.py</code>, are shown at the bottom of the Active Learning Explorer.</p>
       </section>
 
       <section id="distinctions">
@@ -90,6 +93,8 @@ export default function Methods() {
         <h2>7. Sources, attribution, licences and citation</h2>
         <p><strong>Research team:</strong> {L.attribution}</p>
         <p><strong>Publication status:</strong> {m.citation_status}</p>
+        <h3 className="h4">How to cite</h3>
+        <Cite m={m} />
         <p><strong>Repository:</strong> <a href={m.source_repository_url} target="_blank" rel="noopener noreferrer">{m.source_repository_url}</a> ({src('CITATION.cff')}).</p>
         <p><strong>Licences:</strong> study data {L.source_data}; research code {L.source_code}{L.copyright ? ` (© ${L.copyright})` : ''}. Statement: {L.data_statement_source}. This website’s own code is MIT-licensed.</p>
         <p><strong>Third-party tools and data used by the study:</strong></p>

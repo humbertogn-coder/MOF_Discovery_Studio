@@ -2,6 +2,8 @@
 
 **Explore, compare, and prioritize 3D MOF candidates.**
 
+**Live site:** https://mof-discovery-studio.humbertogn.workers.dev (Cloudflare Workers static assets)
+
 MOF Discovery Studio is a static, browser-based interface to the data of the research project
 [**Active learning for low-band-gap 3D metal–organic frameworks**](https://github.com/humbertogn-coder/MOF_3D_Generator)
 (C. H. Guerrero Navarro, M. Ghotbi, P. B. Balbuena; Texas A&M University). It shows the real
@@ -15,7 +17,7 @@ the active-learning acquisition logic that chose which frameworks to compute.
 | | |
 |---|---|
 | Data snapshot | `MOF_3D_Generator` commit `e2e71fa` (2026-10-19), predictions of iteration 3 |
-| Records | 131 QC-passed candidates (of 168 enumerated), 131 CIFs, 27 sent to DFT, 18 accepted labels, 18 DFT-relaxed geometries |
+| Records | 131 QC-passed candidates (of 168 enumerated), 131 CIFs, 27 sent to DFT, 18 accepted labels with DFT-relaxed geometry, band edges and DOS; 9 non-accepted runs with their last DFT geometry |
 | Stack | React 19 + TypeScript + Vite 7, Plotly.js (basic bundle, lazy), 3Dmol.js 2.5.5 (lazy), static JSON |
 | Backend / database / API keys | none |
 | Licence | Website code MIT ([LICENSE](LICENSE)); study data CC-BY-4.0; research code MIT |
@@ -29,7 +31,10 @@ All counts above come from `public/data/release-manifest.json`. The UI reads the
 - **Candidate detail**: 3Dmol.js viewer with ball-and-stick, stick and spheres styles, unit cell, hydrogens on/off, a display-only 2×2×2 replication, reset, and a WebGL/parse-failure fallback. Switch between the **PORMAKE-generated** CIF and the **DFT-relaxed** POSCAR (accepted labels only). Also shows model estimate, OOD reasons, DFT evidence with acceptance notes and spin solutions, QC, active-learning history, and provenance links to exact source rows. Downloads: CIF, POSCAR and JSON.
 - **Compare**: 2–3 candidates side by side. Predicted and computed groups are kept separate, differing rows are highlighted, and one viewer has a switcher. Shareable URL (`/compare?ids=a,b`).
 - **Active Learning Explorer**: replays iterations 0–2 from the recorded pools. The browser verifies that the recorded batches and scores are reproduced exactly. You can explore κ, α, β, batch size and caps, forced anchors and eligibility rules on the frozen iteration-3 predictions (scenario mode). The page shows score decomposition, diversity breakdown, skip reasons, Δrank against the defaults, and CSV export.
-- **Methods & data**: generation and QC scope, descriptor units, model meaning (μ, σ_tree, σ_seed, OOD), DFT protocol and acceptance rules, distinctions, licences, attribution, publication status, snapshot and checksums.
+- **Electronic structure (v0.2)**: for the 18 accepted labels, the band-edge character (metal / μ4-O / carboxylate O / linker within 0.25 eV of the VBM and CBM) and the spin-resolved, site-projected DOS.
+- **DFT campaign (v0.2)**: outcome per iteration, failures with the last DFT geometry (e.g. framework collapse), compute cost, eligibility rules learned, spin-solution sensitivity, and a band-edge overview of all labels.
+- **Retrospective benchmark (v0.2)**: the study's QMOF simulation of selection strategies (hits vs labels, mean ± s.d.), shown on the Active Learning page.
+- **Methods & data** (with BibTeX/RIS citation): generation and QC scope, descriptor units, model meaning (μ, σ_tree, σ_seed, OOD), DFT protocol and acceptance rules, distinctions, licences, attribution, publication status, snapshot and checksums.
 
 ## Quick start
 

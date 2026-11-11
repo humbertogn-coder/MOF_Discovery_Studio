@@ -31,3 +31,21 @@
 - No deployment (requires approval and an account).
 - Provider limits not re-verified online.
 - No Lighthouse audit tool available; accessibility was checked through semantic structure, keyboard focus styles and labels, without an automated axe run.
+
+## 2026-11-11 — v0.2.0
+
+- Deployed v0.1.0 to Cloudflare Workers static assets: https://mof-discovery-studio.humbertogn.workers.dev. Verified live: deep links, the CIF viewer, Explorer counts, and the Active Learning ✓ on all tabs.
+- Exporter 1.1.0 / schema 1.1.0. New bundles:
+  - `electronic/<slug>.json`: broadened DOS for the 18 labels;
+  - `campaign.json`: outcomes, compute, failures, rules and spin solutions;
+  - `retro-al.json`: summary statistics of `scripts/15_retrospective_al.py`;
+  - `structures/dft_last/*.vasp`: last relaxation geometry of the 9 non-accepted runs.
+  - Each candidate record now also has `electronic` (band-edge fractions) and `dft_last_geometry`.
+- UI:
+  - "Electronic structure (DFT)" card on candidate pages (band-edge bars and DOS);
+  - new "DFT campaign" page;
+  - retrospective benchmark section on the Active Learning page;
+  - BibTeX/RIS citation block on the Methods page;
+  - Open Graph social card (`public/og-image.png`, rendered from the live viewer);
+  - optional Cloudflare Web Analytics via `CF_BEACON_TOKEN`.
+- Guardrails: added `bandEdge`, `dos`, `lastGeometry`, `retro` and `spinSolutions`. xTB data are still not shown.

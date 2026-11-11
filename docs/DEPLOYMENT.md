@@ -45,6 +45,11 @@ Then publish `dist/` with the official *GitHub Actions* Pages workflow (Settings
 
 Caveat: GitHub Pages returns HTTP 404 for deep links even though the copied `404.html` renders the right page. Crawlers may treat those pages as missing. Cloudflare Pages does not have this issue.
 
+## Social card and analytics (v0.2)
+
+- Open Graph / Twitter tags point to `${SITE_URL}/og-image.png`. `SITE_URL` defaults to `https://mof-discovery-studio.humbertogn.workers.dev`; set the build variable `SITE_URL` if the domain changes.
+- Optional, cookieless **Cloudflare Web Analytics**: create a site in the Cloudflare dashboard (Analytics & Logs → Web Analytics), copy its token, and add the build variable `CF_BEACON_TOKEN`. The beacon script is injected only when that variable is set. Mention it on the Methods page if you enable it.
+
 ## Verifying a deployment
 
 1. Open `/` and check that the snapshot commit `e2e71fa` appears in the footer.

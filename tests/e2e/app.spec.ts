@@ -155,7 +155,7 @@ test('active learning: custom weights are flagged and reset restores defaults', 
 });
 
 test('pages have no horizontal overflow on a narrow viewport @mobile', async ({ page }) => {
-  for (const p of ['./', './explore', './compare', './active-learning', './methods', './candidate/bcu__Co-N35__short-F4']) {
+  for (const p of ['./', './explore', './compare', './active-learning', './dft-campaign', './methods', './candidate/bcu__Co-N35__short-F4', './candidate/cds__Cu-N409__short-NH2']) {
     await page.goto(p);
     await page.waitForLoadState('networkidle');
     const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
@@ -167,4 +167,49 @@ test('methods page states provenance and publication status', async ({ page }) =
   await page.goto('./methods');
   await expect(page.getByText(manifest.source_commit_hash).first()).toBeVisible();
   await expect(page.getByText(/publication status and DOI to be confirmed/).first()).toBeVisible();
+});
+
+test('candidate page shows band-edge character and DOS for an accepted label', async ({ page }) => {
+  await page.goto('./candidate/cds__Cu-N409__short-NH2');
+  await expect(page.getByRole('heading', { name: /Electronic structure \(DFT\)/ })).toBeVisible();
+  await expect(page.getByRole('img', { name: /^VBM:/ })).toBeVisible();
+  await expect(page.locator('#el-h').locator('..').locator('.js-plotly-plot')).toBeVisible();
+});
+
+test('non-accepted candidate can show its last DFT geometry, labelled as not accepted', async ({ page }) => {
+  await page.goto('./candidate/pcu__Mn-N548__short-H');
+  await expect(page.locator('#el-h')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Last DFT step (not accepted)' }).click();
+  await expect(page.locator('.viewer')).toHaveAttribute('data-state', 'ready');
+  await expect(page.locator('.viewer-foot')).toContainText('not accepted');
+});
+
+test('DFT campaign page summarises outcomes, failures, rules and band edges @mobile', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('./dft-campaign');
+  await expect(page.getByRole('heading', { name: 'The DFT campaign' })).toBeVisible();
+  const nFail = recs.filter((c) => c.dft.status === 'rejected').length;
+  await expect(page.getByText(new RegExp(`^${nFail} of \\d+ frameworks sent to DFT`))).toBeVisible();
+  await expect(page.locator('.fail-viewer .viewer')).toHaveAttribute('data-state', /ready|nowebgl/);
+  await expect(page.locator('.be-table tbody tr')).toHaveCount(recs.filter((c) => c.dft.status === 'accepted').length);
+  expect(errors).toEqual([]);
+});
+
+test('active learning page shows the retrospective benchmark', async ({ page }) => {
+  await page.goto('./active-learning');
+  await expect(page.getByRole('heading', { name: /Retrospective benchmark on QMOF/ })).toBeVisible();
+  await expect(page.getByText(/At the study budget of 27 labels/)).toBeVisible();
+});
+
+test('methods page offers BibTeX and RIS citations', async ({ page }) => {
+  await page.goto('./methods#citation');
+  await expect(page.getByText('@software{').first()).toBeVisible();
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download' }).first().click()]);
+  expect(dl.suggestedFilename()).toBe('MOF_3D_Generator.bib');
+});
+
+test('index.html carries social-card metadata', async ({ request }) => {
+  const html = await (await request.get('./')).text();
+  expect(html).toContain('property="og:image"');
+  expect(html).toContain('summary_large_image');
 });

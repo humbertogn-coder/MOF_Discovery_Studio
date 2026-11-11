@@ -355,3 +355,20 @@ th[aria-sort='ascending'] .sort-ind, th[aria-sort='descending'] .sort-ind { colo
   .site-header, .site-footer, .filters, .viewer, .results-actions { display: none !important; }
   body { background: #fff; }
 }
+
+/* v0.2: electronic structure, campaign, citation */
+.fbar-row { display: grid; grid-template-columns: 44px 1fr; gap: 8px; align-items: center; margin: 6px 0; }
+.fbar-title { font-size: 0.8rem; font-weight: 600; color: var(--slate-600); }
+.fbar { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--slate-100); gap: 2px; }
+.fbar span { display: block; height: 100%; }
+.fbar-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; color: var(--slate-600); margin: 6px 0 10px; }
+.fbar-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.be-table .be-cell { min-width: 160px; width: 30%; }
+.be-table .fbar-row { grid-template-columns: 0 1fr; margin: 0; gap: 0; }
+.wrap-cell { white-space: normal !important; }
+.fail-viewer { margin-top: 14px; }
+.cite-text { background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 10px 12px; }
+.cite-block { margin: 10px 0; }
+.cite-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.cite-block pre { background: #0f2237; color: #e2e8f0; border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.8rem; margin: 0; white-space: pre; }
+.campaign section { overflow-x: hidden; }

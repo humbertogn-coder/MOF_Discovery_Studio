@@ -41,9 +41,9 @@ from typing import Any, Dict, List, Optional, Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import acquisition_ref as acq  # noqa: E402
 
-EXPORT_SCRIPT_VERSION = "1.0.0"
-SCHEMA_VERSION = "1.0.0"
-APP_RELEASE = "0.1.0"
+EXPORT_SCRIPT_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.1.0"
+APP_RELEASE = "0.2.0"
 SOURCE_REPOSITORY_URL = "https://github.com/humbertogn-coder/MOF_3D_Generator"
 SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 MAX_CIF_BYTES = 2_000_000
@@ -769,6 +769,217 @@ class Exporter:
         ])
         return al
 
+    # ---- v1.1: electronic structure, DFT campaign, retrospective benchmark
+    def build_extras(self) -> None:
+        W = self.warn
+        by_id = {r["id"]: r for r in self.records}
+        out_el = self.out / "electronic"
+        # --- band-edge character + DOS curves (accepted labels only)
+        p = self.src("results/band_edges/band_edge_character.csv")
+        n_el = 0
+        if p.exists():
+            rows = read_csv(p, "")[0]
+            for i, r in enumerate(rows):
+                nm = r["name"]
+                rec = by_id.get(nm)
+                if rec is None:
+                    W(f"band_edge_character.csv: {nm} is not a candidate; skipped")
+                    continue
+                if rec["dft"]["status"] != "accepted":
+                    W(f"band_edge_character.csv: {nm} is not an accepted label; skipped")
+                    continue
+                gap = to_float(r["gap_eV"])
+                if gap is not None and rec["dft"].get("gap_eV") is not None and abs(gap - rec["dft"]["gap_eV"]) > 1e-3:
+                    W(f"{nm}: band-edge table gap {gap} differs from dft_results gap {rec['dft']['gap_eV']}")
+                grp = lambda side: OrderedDict((g, to_float(r[f"{side}_{g}"])) for g in ["metal", "oxo", "Ocarb", "linker"])
+                el = OrderedDict([
+                    ("source_row", f"results/band_edges/band_edge_character.csv:{i + 2}"),
+                    ("window_eV", 0.25),
+                    ("spin_solution", to_str(r.get("spin_solution"))),
+                    ("vbm_eV", to_float(r["vbm_eV"])), ("cbm_eV", to_float(r["cbm_eV"])),
+                    ("vb", grp("VB")), ("vb_metal_d", to_float(r["VB_metal_d"])),
+                    ("cb", grp("CB")), ("cb_metal_d", to_float(r["CB_metal_d"])),
+                    ("dos_path", None),
+                ])
+                dp = self.src(f"results/band_edges/dos_curves/{nm}.csv")
+                if dp.exists():
+                    drows, hdr = read_csv(dp, "")
+                    need = ["E_minus_VBM_eV", "total_up", "total_down"]
+                    if all(h in hdr for h in need):
+                        cols = [h for h in hdr if h != "E_minus_VBM_eV"]
+                        dos = OrderedDict([
+                            ("id", nm),
+                            ("energy_reference", "VBM"),
+                            ("broadening_eV", 0.05),
+                            ("source", f"results/band_edges/dos_curves/{nm}.csv"),
+                            ("note", "Gaussian-broadened (0.05 eV) total and site-group projected DOS, spin up and down, "
+                                     "as plotted by scripts/19_dos_figures.py. Values rounded to 5 decimals for the web."),
+                            ("E", [round(to_float(x["E_minus_VBM_eV"]), 5) for x in drows]),
+                            ("series", OrderedDict((c, [round(to_float(x[c]) or 0.0, 5) for x in drows]) for c in cols)),
+                        ])
+                        out_el.mkdir(parents=True, exist_ok=True)
+                        (out_el / f"{rec['slug']}.json").write_text(
+                            json.dumps(dos, allow_nan=False, separators=(",", ":")) + "\n", encoding="utf-8")
+                        el["dos_path"] = f"electronic/{rec['slug']}.json"
+                    else:
+                        W(f"{dp}: unexpected DOS columns {hdr}")
+                rec["electronic"] = el
+                n_el += 1
+        for rec in self.records:
+            rec.setdefault("electronic", None)
+        self.report["n_electronic"] = n_el
+        accepted = [r["id"] for r in self.records if r["dft"]["status"] == "accepted"]
+        missing = [a for a in accepted if by_id[a]["electronic"] is None]
+        if missing:
+            W(f"accepted labels without band-edge data: {missing}")
+
+        # --- last relaxation geometry of non-accepted runs
+        n_fail_geo = 0
+        for rec in self.records:
+            rec.setdefault("dft_last_geometry", None)
+            d = rec["dft"]
+            if d["status"] not in ("rejected", "ambiguous") or d.get("iteration") is None:
+                continue
+            f = self.source / f"runs/iter{d['iteration']}" / rec["id"] / "relax" / "CONTCAR"
+            if not f.is_file():
+                continue
+            try:
+                info = parse_poscar(f.read_text(encoding="utf-8"))
+            except (SchemaError, ValueError, IndexError) as e:
+                W(f"{rec['id']}: CONTCAR unreadable ({e})")
+                continue
+            dst = self.out / "structures" / "dft_last" / f"{rec['slug']}.vasp"
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(f, dst)
+            rel = str(f.relative_to(self.source))
+            self.checksums[rel] = sha256(f)
+            rec["dft_last_geometry"] = OrderedDict([
+                ("path", f"structures/dft_last/{rec['slug']}.vasp"), ("format", "vasp"),
+                ("geometry_provenance", "dft_relaxation_last_step"),
+                ("description", "Last geometry (CONTCAR) of the DFT relaxation that was NOT accepted as a label. "
+                                "Not converged and not a validated structure; shown to illustrate the failure."),
+                ("source_file", rel), ("n_atoms", info["n_atoms"]),
+                ("cell", OrderedDict((k, info[k]) for k in ["a_A", "b_A", "c_A", "alpha_deg", "beta_deg", "gamma_deg"]))])
+            n_fail_geo += 1
+        self.report["n_fail_geo"] = n_fail_geo
+
+        # --- campaign summary
+        iters = sorted({r["dft"]["iteration"] for r in self.records if r["dft"]["status"] != "not_available"})
+        per_iter = []
+        for k in iters:
+            rs = [r for r in self.records if r["dft"]["status"] != "not_available" and r["dft"]["iteration"] == k]
+            per_iter.append(OrderedDict([
+                ("iteration", k), ("submitted", len(rs)),
+                ("accepted", sum(1 for r in rs if r["dft"]["status"] == "accepted")),
+                ("not_accepted", sum(1 for r in rs if r["dft"]["status"] != "accepted")),
+                ("accepted_conditional", sum(1 for r in rs if r["dft"]["status"] == "accepted" and (r["dft"].get("relax_stopped") or any("relax_scf_checked_by_static" in n for n in r["dft"].get("acceptance_notes") or [])))),
+            ]))
+        compute = []
+        p = self.src("results/final/table_compute.csv")
+        if p.exists():
+            for r in read_csv(p, "")[0]:
+                compute.append(OrderedDict([("iteration", to_int(r["iteration"])), ("cluster", to_str(r["cluster"])),
+                                            ("jobs", to_int(r["jobs"])), ("wall_h", to_float(r["wall_h"])),
+                                            ("core_h", to_float(r["core_h"]))]))
+        failures = []
+        for r in self.records:
+            if r["dft"]["status"] in ("rejected", "ambiguous"):
+                d = r["dft"]
+                failures.append(OrderedDict([
+                    ("id", r["id"]), ("slug", r["slug"]), ("iteration", d.get("iteration")),
+                    ("topology", r["topology"]), ("metal", r["metal"]), ("node_family", r["node_family"]),
+                    ("substituent", r["substituent"]), ("n_atoms", r["structure"]["n_atoms"]),
+                    ("outcome", d.get("outcome")), ("reasons", d.get("reasons") or []),
+                    ("vol_change_pct", d.get("vol_change_pct")), ("max_angle_change_deg", d.get("max_angle_change_deg")),
+                    ("mu_at_selection_eV", (d.get("prediction_at_selection") or {}).get("mu_eV")),
+                    ("has_last_geometry", r["dft_last_geometry"] is not None)]))
+        failures.sort(key=lambda x: (x["iteration"] if x["iteration"] is not None else 99, x["id"]))
+        rules = []
+        for k in range(1, self.iteration):
+            rj = self.source / f"data/al/iter{k}/selection_rules.json"
+            if rj.exists():
+                j = json.loads(rj.read_text())
+                rules.append(OrderedDict([("iteration", k), ("exclude_family", j.get("exclude_family") or []),
+                                          ("exclude_combo", j.get("exclude_combo") or []), ("max_atoms", j.get("max_atoms")),
+                                          ("n_not_yet_computed", j.get("n_not_yet_computed")), ("n_eligible", j.get("n_eligible")),
+                                          ("source", f"data/al/iter{k}/selection_rules.json")]))
+        spin = []
+        for r in self.records:
+            d = r["dft"]
+            if d["status"] == "accepted" and d.get("spin_solutions"):
+                fm = next((s for s in d["spin_solutions"] if s["start"] == "fm-start"), None)
+                spin.append(OrderedDict([("id", r["id"]), ("slug", r["slug"]), ("label_solution", d.get("spin_solution")),
+                                         ("label_gap_eV", d.get("gap_eV")),
+                                         ("fm_start_gap_eV", fm["gap_eV"] if fm else None),
+                                         ("fm_start_converged", fm["scf_converged"] if fm else None),
+                                         ("n_solutions", len(d["spin_solutions"]))]))
+        campaign = OrderedDict([
+            ("schema_version", SCHEMA_VERSION),
+            ("iterations", per_iter), ("compute", compute),
+            ("compute_source", "results/final/table_compute.csv (reconstructed from SLURM logs by the study)"),
+            ("failures", failures), ("eligibility_rules", rules), ("spin_solutions", spin),
+        ])
+        (self.out / "campaign.json").write_text(json.dumps(campaign, allow_nan=False, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+        # --- retrospective benchmark (summary statistics only)
+        p = self.src("results/retro_al/retro_al_selection_summary.csv")
+        h = self.src("results/retro_al/retro_al_headline.csv")
+        rp = self.source / "results/retro_al/retro_al_runs.csv"
+        if p.exists() and h.exists():
+            curves: Dict[str, List[dict]] = {}
+            for r in read_csv(p, "")[0]:
+                curves.setdefault(r["strategy"], []).append(OrderedDict([
+                    ("labels", to_int(r["n_after"])),
+                    ("hits_lt_0p5_mean", to_float(r["hits_lt_0p5_mean"])), ("hits_lt_0p5_sd", to_float(r["hits_lt_0p5_std"])),
+                    ("hits_lt_1p0_mean", to_float(r["hits_lt_1p0_mean"])), ("hits_lt_1p0_sd", to_float(r["hits_lt_1p0_std"])),
+                    ("recall_top10_mean", to_float(r["recall_top10_mean"])), ("recall_top10_sd", to_float(r["recall_top10_std"]))]))
+            for v in curves.values():
+                v.sort(key=lambda x: x["labels"])
+            headline = [OrderedDict([("labels", to_int(r["labels"])), ("strategy", r["strategy"]),
+                                     ("hits_lt_0p5", to_float(r["hits_lt_0p5"])), ("hits_lt_0p5_sd", to_float(r["hits_lt_0p5_sd"])),
+                                     ("hits_lt_1p0", to_float(r["hits_lt_1p0"])), ("recall_top10", to_float(r["recall_top10"])),
+                                     ("test_MAE_eV", to_float(r["test_MAE"]))])
+                        for r in read_csv(h, "")[0]]
+            repeats = None
+            if rp.exists():
+                with open(rp, newline="") as fh:
+                    repeats = len({row["repeat"] for row in csv.DictReader(fh)})
+                self.checksums["results/retro_al/retro_al_runs.csv"] = sha256(rp)
+            retro = OrderedDict([
+                ("schema_version", SCHEMA_VERSION),
+                ("source", "scripts/15_retrospective_al.py; results/retro_al/retro_al_selection_summary.csv and retro_al_headline.csv"),
+                ("repeats", repeats), ("pool_size", 150), ("schedule", [11, 8, 8, 8, 8, 8, 8]), ("study_budget_labels", 27),
+                ("setup", "Simulation on QMOF, not on the generated catalogue. Surrogate trained on the in-distribution part of QMOF; "
+                          "each repeat draws a pool of 150 out-of-distribution QMOF structures with the candidates' chemistry "
+                          "(one of Mn, Fe, Co, Ni, Cu, Zn, Mg; otherwise C, H, N, O, F). The QMOF PBE gap plays the role of the DFT "
+                          "label. Batches of 11 then 8; one 300-tree ExtraTrees member per repeat. Values are means and standard "
+                          "deviations over the repeats, as computed by the study."),
+                ("strategies", OrderedDict([
+                    ("random", "Uniform random batch"),
+                    ("greedy", "Lowest predicted gap μ"),
+                    ("lcb", "Lowest μ − σ"),
+                    ("paper", "Study acquisition (μ − κσ − α·novelty, diversity caps), with retraining"),
+                    ("paper_static", "Study acquisition without retraining (initial model only)"),
+                    ("uncertainty", "Highest σ (pure exploration)"),
+                    ("expected_random", "Analytical expectation for random selection"),
+                ])),
+                ("curves", curves), ("headline", headline),
+                ("note", "Summary statistics derived by the study from QMOF; QMOF data themselves are not redistributed."),
+            ])
+            (self.out / "retro-al.json").write_text(json.dumps(retro, allow_nan=False, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+            self.report["retro"] = True
+        else:
+            W("retrospective benchmark tables not found; retro-al.json not written")
+            self.report["retro"] = False
+        self.decisions += [
+            "Band-edge character (results/band_edges/band_edge_character.csv, ±0.25 eV window) and broadened DOS curves "
+            "(results/band_edges/dos_curves) are exported for accepted labels only.",
+            "For DFT runs that were not accepted, the last relaxation geometry (relax/CONTCAR) is exported separately as "
+            "'dft_relaxation_last_step' and labelled as not validated.",
+            "The retrospective benchmark is exported as the study's summary statistics only (no per-structure QMOF data).",
+            "xTB comparisons (results/band_edges/xtb_vs_dft_band_edges.csv) are not exported.",
+        ]
+
     # ---- write
     def write(self) -> Dict[str, Any]:
         self.out.mkdir(parents=True, exist_ok=True)
@@ -829,6 +1040,10 @@ class Exporter:
             ("records_with_ambiguous_dft", n_status.get("ambiguous", 0)),
             ("records_with_dft_geometry", sum(1 for r in recs if r["dft_geometry"])),
             ("records_ood", sum(1 for r in recs if r["prediction"] and r["prediction"]["is_ood"])),
+            ("records_with_band_edges", sum(1 for r in recs if r.get("electronic"))),
+            ("records_with_dos", sum(1 for r in recs if r.get("electronic") and r["electronic"].get("dos_path"))),
+            ("records_with_failed_dft_geometry", sum(1 for r in recs if r.get("dft_last_geometry"))),
+            ("retrospective_benchmark", bool(self.report.get("retro"))),
             ("dft_rows_in_source", len(self.dft_raw)),
             ("dft_sensitivity_runs", self.report["n_variants"]),
             ("dft_by_iteration", OrderedDict((str(k), OrderedDict(sorted(v.items()))) for k, v in sorted(per_iter.items()))),
@@ -957,7 +1172,8 @@ def main(argv=None) -> int:
         print("refusing to write inside the source repository", file=sys.stderr)
         return 2
     # Clean only what this exporter owns.
-    for p in ["structures", "candidates.json", "active-learning.json", "release-manifest.json", "DATA_README.txt"]:
+    for p in ["structures", "electronic", "candidates.json", "active-learning.json", "campaign.json",
+              "retro-al.json", "release-manifest.json", "DATA_README.txt"]:
         q = out / p
         if q.is_dir():
             shutil.rmtree(q)
@@ -967,6 +1183,7 @@ def main(argv=None) -> int:
     try:
         ex.load()
         ex.build()
+        ex.build_extras()
         m = ex.write()
     except SchemaError as e:
         print(f"SCHEMA ERROR: {e}", file=sys.stderr)

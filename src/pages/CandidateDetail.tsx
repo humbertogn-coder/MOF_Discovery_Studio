@@ -11,18 +11,23 @@ import { G } from '../lib/guardrails';
 import type { Candidate, Manifest } from '../lib/types';
 
 const StructureViewer = lazy(() => import('../components/StructureViewer'));
+const ElectronicStructure = lazy(() => import('../components/ElectronicStructure'));
+
+const GEO_LABEL: Record<StructureSource['provenance'], string> = { pormake_generated: 'PORMAKE-generated', dft_relaxed: 'DFT-relaxed', dft_relaxation_last_step: 'Last DFT step (not accepted)' };
 
 export function structureSources(c: Candidate): StructureSource[] {
   const s: StructureSource[] = [];
   if (c.structure.cif_path) s.push({ path: c.structure.cif_path, format: 'cif', label: 'PORMAKE-generated (CIF)', provenance: 'pormake_generated' });
   if (c.dft_geometry) s.push({ path: c.dft_geometry.path, format: 'vasp', label: 'DFT-relaxed (POSCAR)', provenance: 'dft_relaxed' });
+  if (c.dft_last_geometry) s.push({ path: c.dft_last_geometry.path, format: 'vasp', label: 'Last DFT geometry — not accepted (CONTCAR)', provenance: 'dft_relaxation_last_step' });
   return s;
 }
 
-export function ViewerPanel({ c, compact = false }: { c: Candidate; compact?: boolean }) {
+export function ViewerPanel({ c, compact = false, prefer }: { c: Candidate; compact?: boolean; prefer?: StructureSource['provenance'] }) {
   const sources = structureSources(c);
-  const [i, setI] = useState(0);
-  useEffect(() => setI(0), [c.id]);
+  const start = Math.max(0, prefer ? sources.findIndex((s) => s.provenance === prefer) : 0);
+  const [i, setI] = useState(start);
+  useEffect(() => setI(start), [c.id, start]);
   const src = sources[i];
   if (!src) {
     return (
@@ -37,17 +42,17 @@ export function ViewerPanel({ c, compact = false }: { c: Candidate; compact?: bo
         <div className="seg geometry-switch" role="group" aria-label="Geometry">
           {sources.map((s, k) => (
             <button key={s.path} type="button" aria-pressed={k === i} onClick={() => setI(k)}>
-              {s.provenance === 'dft_relaxed' ? 'DFT-relaxed' : 'PORMAKE-generated'}
+              {GEO_LABEL[s.provenance]}
             </button>
           ))}
         </div>
       )}
       <Suspense fallback={<div className="viewer"><div className="viewer-stage"><div className="viewer-overlay" role="status">Loading viewer…</div></div></div>}>
-        <StructureViewer key={src.path} source={src} expectedAtoms={src.provenance === 'dft_relaxed' ? c.dft_geometry?.n_atoms : c.structure.n_atoms} title={c.id} />
+        <StructureViewer key={src.path} source={src} expectedAtoms={src.provenance === 'dft_relaxed' ? c.dft_geometry?.n_atoms : src.provenance === 'dft_relaxation_last_step' ? c.dft_last_geometry?.n_atoms : c.structure.n_atoms} title={c.id} />
       </Suspense>
       {!compact && (
         <p className="small muted geometry-note">
-          {src.provenance === 'dft_relaxed' ? G.geometryDft : G.geometryPormake}
+          {src.provenance === 'dft_relaxed' ? G.geometryDft : src.provenance === 'dft_relaxation_last_step' ? G.lastGeometry : G.geometryPormake}
         </p>
       )}
     </div>
@@ -288,6 +293,12 @@ export default function CandidateDetail() {
             <h2 id="dft-h" className="h3">DFT evidence</h2>
             <DftSection c={c} />
           </section>
+          {c.electronic ? (
+            <Suspense fallback={<div className="card"><Loading what="electronic structure" /></div>}>
+              <ElectronicStructure c={c} m={manifest} />
+            </Suspense>
+          ) : null}
+
           <section className="card" aria-labelledby="id-h">
             <h2 id="id-h" className="h3">Identity and building blocks</h2>
             <dl className="kv-grid">

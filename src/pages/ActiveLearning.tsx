@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../app/DataContext';
 import { PlotlyChart } from '../components/PlotlyChart';
@@ -8,6 +8,8 @@ import { download, toCsv } from '../lib/csv';
 import { candidatePath, loadActiveLearning } from '../lib/data';
 import { G } from '../lib/guardrails';
 import { SERIES } from '../lib/palette';
+
+const RetroBenchmark = lazy(() => import('../components/RetroBenchmark'));
 import type { AlFile, AlIteration } from '../lib/types';
 
 interface Settings extends Weights, Caps {
@@ -342,6 +344,9 @@ export default function ActiveLearning() {
           </section>
         </div>
       </div>
+      <Suspense fallback={null}>
+        <RetroBenchmark />
+      </Suspense>
     </div>
   );
 }

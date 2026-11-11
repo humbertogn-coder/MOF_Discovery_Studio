@@ -94,6 +94,46 @@ export interface DftGeometry {
   n_atoms: number;
 }
 
+export interface SiteFractions {
+  metal: number | null;
+  oxo: number | null;
+  Ocarb: number | null;
+  linker: number | null;
+}
+
+export interface Electronic {
+  source_row: string;
+  window_eV: number;
+  spin_solution: string | null;
+  vbm_eV: number | null;
+  cbm_eV: number | null;
+  vb: SiteFractions;
+  vb_metal_d: number | null;
+  cb: SiteFractions;
+  cb_metal_d: number | null;
+  dos_path: string | null;
+}
+
+export interface DosFile {
+  id: string;
+  energy_reference: 'VBM';
+  broadening_eV: number;
+  source: string;
+  note: string;
+  E: number[];
+  series: Record<string, number[]>;
+}
+
+export interface LastGeometry {
+  path: string;
+  format: 'vasp';
+  geometry_provenance: 'dft_relaxation_last_step';
+  description: string;
+  source_file: string;
+  n_atoms: number;
+  cell: { a_A: number; b_A: number; c_A: number; alpha_deg: number; beta_deg: number; gamma_deg: number };
+}
+
 export interface AlHistoryEntry {
   iteration: number;
   rank_in_pool: number;
@@ -127,6 +167,8 @@ export interface Candidate {
   prediction: Prediction | null;
   dft: DftRecord;
   dft_geometry: DftGeometry | null;
+  dft_last_geometry: LastGeometry | null;
+  electronic: Electronic | null;
   al_history: AlHistoryEntry[];
   provenance: { catalogue: string; zeopp: string | null; prediction: string | null };
 }
@@ -157,6 +199,10 @@ export interface Manifest {
   records_with_ambiguous_dft: number;
   records_with_dft_geometry: number;
   records_ood: number;
+  records_with_band_edges: number;
+  records_with_dos: number;
+  records_with_failed_dft_geometry: number;
+  retrospective_benchmark: boolean;
   dft_rows_in_source: number;
   dft_sensitivity_runs: number;
   dft_by_iteration: Record<string, Partial<Record<DftStatus, number>>>;
@@ -235,4 +281,39 @@ export interface AlFile {
   code_defaults_source: string;
   tie_break: string;
   iterations: AlIteration[];
+}
+
+export interface CampaignFile {
+  schema_version: string;
+  iterations: { iteration: number; submitted: number; accepted: number; not_accepted: number; accepted_conditional: number }[];
+  compute: { iteration: number; cluster: string; jobs: number; wall_h: number; core_h: number }[];
+  compute_source: string;
+  failures: {
+    id: string; slug: string; iteration: number | null; topology: string; metal: string; node_family: string; substituent: string;
+    n_atoms: number | null; outcome: string | null; reasons: string[]; vol_change_pct: number | null; max_angle_change_deg: number | null;
+    mu_at_selection_eV: number | null; has_last_geometry: boolean;
+  }[];
+  eligibility_rules: { iteration: number; exclude_family: string[]; exclude_combo: string[]; max_atoms: number | null; n_not_yet_computed: number | null; n_eligible: number | null; source: string }[];
+  spin_solutions: { id: string; slug: string; label_solution: string | null; label_gap_eV: number | null; fm_start_gap_eV: number | null; fm_start_converged: boolean | null; n_solutions: number }[];
+}
+
+export interface RetroPoint {
+  labels: number;
+  hits_lt_0p5_mean: number; hits_lt_0p5_sd: number;
+  hits_lt_1p0_mean: number; hits_lt_1p0_sd: number;
+  recall_top10_mean: number; recall_top10_sd: number;
+}
+
+export interface RetroFile {
+  schema_version: string;
+  source: string;
+  repeats: number | null;
+  pool_size: number;
+  schedule: number[];
+  study_budget_labels: number;
+  setup: string;
+  strategies: Record<string, string>;
+  curves: Record<string, RetroPoint[]>;
+  headline: { labels: number; strategy: string; hits_lt_0p5: number | null; hits_lt_0p5_sd: number | null; hits_lt_1p0: number | null; recall_top10: number | null; test_MAE_eV: number | null }[];
+  note: string;
 }

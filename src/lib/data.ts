@@ -1,4 +1,4 @@
-import type { AlFile, Candidate, CandidatesFile, Manifest } from './types';
+import type { AlFile, CampaignFile, Candidate, CandidatesFile, DosFile, Manifest, RetroFile } from './types';
 
 const SAFE_PATH = /^structures\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.(cif|vasp)$/;
 
@@ -23,6 +23,14 @@ async function getJson<T>(rel: string): Promise<T> {
 export const loadManifest = () => getJson<Manifest>('release-manifest.json');
 export const loadCandidates = () => getJson<CandidatesFile>('candidates.json');
 export const loadActiveLearning = () => getJson<AlFile>('active-learning.json');
+export const loadCampaign = () => getJson<CampaignFile>('campaign.json');
+export const loadRetro = () => getJson<RetroFile>('retro-al.json');
+
+const SAFE_DOS = /^electronic\/[A-Za-z0-9_-]+\.json$/;
+export function loadDos(rel: string): Promise<DosFile> {
+  if (!SAFE_DOS.test(rel)) return Promise.reject(new Error('Invalid DOS path'));
+  return getJson<DosFile>(rel);
+}
 
 export async function loadStructureText(rel: string): Promise<string> {
   const url = safeStructureUrl(rel);

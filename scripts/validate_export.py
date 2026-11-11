@@ -98,6 +98,44 @@ def validate(root: Path) -> list:
             if p["is_ood"] and not p["ood_reasons"]:
                 E(f"{rid}: OOD flag without reasons")
 
+        el = r.get("electronic")
+        if el:
+            if r["dft"]["status"] != "accepted":
+                E(f"{rid}: electronic data for a non-accepted label")
+            for side in ("vb", "cb"):
+                tot = sum(v for v in el[side].values() if v is not None)
+                if abs(tot - 1.0) > 0.02:
+                    E(f"{rid}: {side} site fractions sum to {tot:.3f}")
+            dp = el.get("dos_path")
+            if dp:
+                if not re.match(r"^electronic/[A-Za-z0-9_-]+\.json$", dp) or not (root / dp).is_file():
+                    E(f"{rid}: invalid dos_path {dp}")
+                else:
+                    dos = strict_load(root / dp)
+                    n = len(dos["E"])
+                    if any(len(v) != n for v in dos["series"].values()):
+                        E(f"{rid}: DOS series lengths differ from energy grid")
+        lg = r.get("dft_last_geometry")
+        if lg:
+            if r["dft"]["status"] == "accepted" or lg.get("geometry_provenance") != "dft_relaxation_last_step":
+                E(f"{rid}: invalid dft_last_geometry")
+            if not (root / lg["path"]).is_file():
+                E(f"{rid}: missing {lg['path']}")
+
+    # campaign / retrospective bundles
+    if (root / "campaign.json").is_file():
+        camp = strict_load(root / "campaign.json")
+        n_sub = sum(i["submitted"] for i in camp["iterations"])
+        if n_sub != sum(1 for r in recs if r["dft"]["status"] != "not_available"):
+            E("campaign.json: submitted count inconsistent with candidates")
+        if sum(i["accepted"] for i in camp["iterations"]) != sum(1 for r in recs if r["dft"]["status"] == "accepted"):
+            E("campaign.json: accepted count inconsistent with candidates")
+    if (root / "retro-al.json").is_file():
+        ra = strict_load(root / "retro-al.json")
+        for k in ("paper", "random"):
+            if k not in ra["curves"]:
+                E(f"retro-al.json: missing strategy {k}")
+
     # manifest consistency
     checks = {
         "record_count": len(recs),

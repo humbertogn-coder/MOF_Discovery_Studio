@@ -11,6 +11,8 @@ Status legend: ☐ open · ☑ done in this build · ⚠ blocker that needs a hu
 
 ## Content and licensing
 
+- ⚠ **v0.2 adds unpublished analyses**: band-edge character and DOS of the 18 labels, the failure gallery with last DFT geometries, compute cost and the retrospective QMOF benchmark. Include them in the team's approval.
+
 - ☑ Only data from the public research repository at a frozen commit (`e2e71fa`) are shipped.
 - ☑ No QMOF data, POTCARs, raw VASP outputs, trained models or manuscript text and figures in the bundle (`scripts/validate_export.py` rejects restricted file patterns).
 - ☑ Study data CC-BY-4.0 and research code MIT stated, with attribution on every download (JSON exports, DATA_README.txt).

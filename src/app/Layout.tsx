@@ -9,6 +9,7 @@ const NAV = [
   { to: '/explore', label: 'Explorer' },
   { to: '/compare', label: 'Compare' },
   { to: '/active-learning', label: 'Active learning' },
+  { to: '/dft-campaign', label: 'DFT campaign' },
   { to: '/methods', label: 'Methods & data' },
 ];
 
@@ -22,7 +23,7 @@ export default function Layout() {
     window.scrollTo(0, 0);
   }, [loc.pathname]);
   useEffect(() => {
-    const titles: Record<string, string> = { '/': 'Overview', '/explore': 'Explorer', '/compare': 'Compare', '/active-learning': 'Active learning', '/methods': 'Methods & data' };
+    const titles: Record<string, string> = { '/': 'Overview', '/explore': 'Explorer', '/compare': 'Compare', '/active-learning': 'Active learning', '/dft-campaign': 'DFT campaign', '/methods': 'Methods & data' };
     const t = titles[loc.pathname];
     if (t) document.title = `${t} · MOF Discovery Studio`;
   }, [loc.pathname]);

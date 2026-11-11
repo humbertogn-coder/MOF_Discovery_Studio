@@ -44,6 +44,16 @@ export const G = {
     'Electronic conductivity, carrier mobility, mechanical robustness, chemical stability and synthesisability are not implied by a small predicted or computed band gap.',
   smallGap:
     'A small DFT gap is method- and spin-dependent and is not, by itself, evidence of metallic behaviour.',
+  bandEdge:
+    'Band-edge character: share of the electronic states within 0.25 eV of the valence-band maximum (VBM) and of the conduction-band minimum (CBM) that sits on each site group (metal, μ4-O, carboxylate O, linker backbone), from the DFT projections of the accepted label (k-weighted, both spins). It describes the PBE frontier states; it is not an experimental measurement.',
+  dos:
+    'Density of states (DOS): total and site-projected PBE DOS of the static calculation that provided the label, relative to the VBM, spin up drawn upward and spin down downward. A 0.05 eV Gaussian broadening is applied for legibility.',
+  lastGeometry:
+    'Last DFT geometry (not accepted): final structure of a DFT relaxation that did not meet the acceptance rules. It is not converged and not a validated structure; it is shown only to illustrate the failure, for example a framework collapse.',
+  retro:
+    'Retrospective benchmark: a simulation on QMOF, not on the generated catalogue. The QMOF PBE gap plays the role of the DFT label for pools of 150 out-of-distribution QMOF structures. It shows how selection strategies compare under these conditions; it is not a measurement on the hypothetical frameworks.',
+  spinSolutions:
+    'Spin solutions: several initial magnetic configurations were computed on the same geometry; the label is the lowest-energy converged one. The gap can change by several tenths of an eV between solutions, which is a known sensitivity of PBE for open-shell frameworks.',
 } as const;
 
 export type GuardrailKey = keyof typeof G;
