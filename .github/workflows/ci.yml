@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # Frozen research snapshot used to verify that the committed data bundle is reproducible.
+  SOURCE_REPO: humbertogn-coder/MOF_3D_Generator
+  SOURCE_SHA: e2e71fada04e9679f95fa07412854c82db0e3dc2
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the public research repository (read-only input)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ref: ${{ env.SOURCE_SHA }}
+          path: _source/MOF_3D_Generator
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - run: npm ci
+      - run: pip install -r requirements-dev.txt
+
+      - name: Validate committed data bundle
+        run: python3 scripts/validate_export.py public/data
+
+      - name: Re-export and compare with the committed bundle (reproducibility)
+        run: |
+          python3 scripts/export_research_data.py --source _source/MOF_3D_Generator --out /tmp/export/data --docs /tmp/export/docs --timestamp 2000-01-01T00:00:00Z
+          diff -q /tmp/export/data/candidates.json public/data/candidates.json
+          diff -q /tmp/export/data/active-learning.json public/data/active-learning.json
+          diff -rq /tmp/export/data/structures public/data/structures
+
+      - name: Python tests (exporter, replay, cross-check vs original acquisition code)
+        env:
+          MOF_SOURCE: _source/MOF_3D_Generator
+        run: python3 -m pytest tests/python -q
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+
+      - name: Playwright E2E
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e

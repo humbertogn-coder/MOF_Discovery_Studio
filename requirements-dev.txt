@@ -1,0 +1,4 @@
+# The exporter and validator use only the Python standard library.
+# These are needed for the test suite (pandas enables the cross-check against the original code).
+pytest==9.1.1
+pandas>=2.2

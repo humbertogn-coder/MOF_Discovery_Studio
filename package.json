@@ -1,0 +1,49 @@
+{
+  "name": "mof-discovery-studio",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Explore, compare, and prioritize 3D MOF candidates from the MOF_3D_Generator active-learning study.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "build:gh-pages": "tsc -p tsconfig.json && vite build --base=${BASE_PATH:-/MOF_Discovery_Studio/} && cp dist/index.html dist/404.html",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:py": "python3 -m pytest tests/python -q",
+    "test:e2e": "playwright test",
+    "export-data": "python3 scripts/export_research_data.py --source ${MOF_SOURCE:-../MOF_3D_Generator} --out public/data --docs docs",
+    "validate-data": "python3 scripts/validate_export.py public/data",
+    "check": "npm run validate-data && npm run typecheck && npm run lint && npm run test && npm run test:py && npm run build"
+  },
+  "dependencies": {
+    "3dmol": "2.5.5",
+    "plotly.js-basic-dist-min": "3.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "react-router-dom": "7.9.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.35.0",
+    "@playwright/test": "1.63.0",
+    "@testing-library/react": "16.3.0",
+    "@types/node": "22.18.1",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "5.0.2",
+    "eslint": "9.35.0",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "globals": "16.4.0",
+    "jsdom": "26.1.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.44.0",
+    "vite": "7.1.5",
+    "vitest": "3.2.4"
+  }
+}

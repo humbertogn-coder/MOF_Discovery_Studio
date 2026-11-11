@@ -1,0 +1,18 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.env
+.env.*
+.wrangler/
+# never commit restricted research files
+POTCAR*
+WAVECAR*
+CHGCAR*
+*.pkl
