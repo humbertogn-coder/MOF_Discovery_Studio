@@ -58,24 +58,24 @@ export default function DftCampaign() {
           <PlotlyChart data={bars} layout={{ barmode: 'stack', yaxis: { title: { text: 'Frameworks sent to DFT' }, dtick: 2 }, xaxis: { type: 'category' } }} height={300}
             ariaLabel="Stacked bars of accepted and not accepted DFT calculations per iteration" description="Conditional acceptances are relaxations stopped by hand with Fmax ≤ 0.25 eV/Å, or the relax-SCF check by a converged static run." />
           <div>
-            <table className="data-table compact">
+            <div className="table-wrap"><table className="data-table compact">
               <thead><tr><th scope="col">Iteration</th><th scope="col" className="num">Submitted</th><th scope="col" className="num">Accepted</th><th scope="col" className="num">of which conditional</th><th scope="col" className="num">Not accepted</th></tr></thead>
               <tbody>
                 {camp.iterations.map((i) => (
                   <tr key={i.iteration}><td>{i.iteration}</td><td className="num">{i.submitted}</td><td className="num">{i.accepted}</td><td className="num">{i.accepted_conditional}</td><td className="num">{i.not_accepted}</td></tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
             {camp.compute.length > 0 && (
               <>
                 <h3 className="h5">Compute cost <span className="muted">(core-hours)</span></h3>
-                <table className="data-table compact">
+                <div className="table-wrap"><table className="data-table compact">
                   <thead><tr><th scope="col">Iteration</th><th scope="col">Cluster</th><th scope="col" className="num">Jobs</th><th scope="col" className="num">Core-h</th></tr></thead>
                   <tbody>
                     {camp.compute.map((r) => <tr key={`${r.iteration}-${r.cluster}`}><td>{r.iteration}</td><td>{r.cluster}</td><td className="num">{r.jobs}</td><td className="num">{Math.round(r.core_h).toLocaleString('en-US')}</td></tr>)}
                     <tr><th scope="row" colSpan={3}>Total</th><td className="num"><strong>{Math.round(totalCore).toLocaleString('en-US')}</strong></td></tr>
                   </tbody>
-                </table>
+                </table></div>
                 <p className="small muted">Source: <a href={sourceBlob(manifest, 'results/final/table_compute.csv')} target="_blank" rel="noopener noreferrer"><code>results/final/table_compute.csv</code></a> (reconstructed from the SLURM logs).</p>
               </>
             )}
@@ -119,7 +119,7 @@ export default function DftCampaign() {
       <section aria-labelledby="rules-h">
         <h2 id="rules-h">3. Rules learned from the failures</h2>
         <p>After each iteration the study excluded node families or family/topology/metal combinations that had collapsed, and capped the system size for cost. These rules shaped the next batches (see the <Link to="/active-learning">Active Learning Explorer</Link>).</p>
-        <table className="data-table compact">
+        <div className="table-wrap"><table className="data-table compact">
           <thead><tr><th scope="col">Applied from iteration</th><th scope="col">Excluded node families</th><th scope="col">Excluded family : topology : metal</th><th scope="col" className="num">Max. atoms</th><th scope="col" className="num">Eligible / not yet computed</th></tr></thead>
           <tbody>
             {camp.eligibility_rules.map((r) => (
@@ -132,13 +132,13 @@ export default function DftCampaign() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </section>
 
       <section aria-labelledby="spin-h">
         <h2 id="spin-h">4. Spin solutions change the label <InfoTip text={G.spinSolutions} /></h2>
         <p>For paddlewheel frameworks the study compared several initial magnetic configurations on the same geometry. The table shows the gap from the standard ferromagnetic start and the gap of the lowest-energy converged solution that became the label.</p>
-        <table className="data-table compact">
+        <div className="table-wrap"><table className="data-table compact">
           <thead><tr><th scope="col">Label</th><th scope="col">Label solution</th><th scope="col" className="num">FM-start gap (eV)</th><th scope="col" className="num">Label gap (eV)</th></tr></thead>
           <tbody>
             {camp.spin_solutions.map((s) => (
@@ -150,7 +150,7 @@ export default function DftCampaign() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </section>
 
       <section aria-labelledby="be-h">

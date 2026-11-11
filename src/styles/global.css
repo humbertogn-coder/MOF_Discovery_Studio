@@ -372,3 +372,9 @@ th[aria-sort='ascending'] .sort-ind, th[aria-sort='descending'] .sort-ind { colo
 .cite-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
 .cite-block pre { background: #0f2237; color: #e2e8f0; border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.8rem; margin: 0; white-space: pre; }
 .campaign section { overflow-x: hidden; }
+
+.grid-2 > * { min-width: 0; }
+.campaign .chart { max-width: 100%; }
+
+/* keep absolutely positioned sr-only text inside scroll containers */
+.table-wrap, .prose-page section, .card { position: relative; }
