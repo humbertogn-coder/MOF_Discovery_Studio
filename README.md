@@ -34,6 +34,7 @@ All counts above come from `public/data/release-manifest.json`. The UI reads the
 - **Electronic structure (v0.2)**: for the 18 accepted labels, the band-edge character (metal / μ4-O / carboxylate O / linker within 0.25 eV of the VBM and CBM) and the spin-resolved, site-projected DOS.
 - **DFT campaign (v0.2)**: outcome per iteration, failures with the last DFT geometry (e.g. framework collapse), compute cost, eligibility rules learned, spin-solution sensitivity, and a band-edge overview of all labels.
 - **Retrospective benchmark (v0.2)**: the study's QMOF simulation of selection strategies (hits vs labels, mean ± s.d.), shown on the Active Learning page.
+- **Bundles**: look at the result of any run of [mofsift](https://github.com/humbertogn-coder/mofsift), the screening library that grew out of the study. Open the folder that `mofsift export` wrote (the browser reads it; nothing is uploaded) or the example shipped with the site. A searchable, sortable table with a column chooser, the meaning and unit of every column taken from the bundle's own manifest, a record page with the 3D structure and every value grouped by stage, checksums verified against the manifest, and missing values shown as missing. This section is separate from the study pages. See [docs/BUNDLES.md](docs/BUNDLES.md).
 - **Methods & data** (with BibTeX/RIS citation): generation and QC scope, descriptor units, model meaning (μ, σ_tree, σ_seed, OOD), DFT protocol and acceptance rules, distinctions, licences, attribution, publication status, snapshot and checksums.
 
 ## Quick start
@@ -68,7 +69,7 @@ The exporter uses only the Python standard library. It reads the source tables, 
 
 ```bash
 npm run check          # validate-data + typecheck + lint + unit tests + Python tests + build
-npm run test           # Vitest: filters, acquisition (vs exported Python reference), CSV, paths, guardrail sync, UI primitives
+npm run test           # Vitest: filters, acquisition (vs exported Python reference), CSV, paths, guardrail sync, UI primitives, bundle reader and pages
 npm run test:py        # pytest: exporter (synthetic + real data), replay vs recorded batches, cross-check vs ORIGINAL pandas code
 npm run test:e2e       # Playwright (desktop + mobile) against the production preview
 ```
@@ -81,18 +82,21 @@ npm run test:e2e       # Playwright (desktop + mobile) against the production pr
 MOF_Discovery_Studio/
   index.html, vite.config.ts, tsconfig.json, eslint.config.js, playwright.config.ts
   src/
-    app/          App (routes), Layout, DataContext, CompareContext
+    app/          App (routes), Layout, DataContext, CompareContext, BundleContext
     components/   ui primitives, PlotlyChart (lazy), StructureViewer (lazy 3Dmol.js)
-    pages/        Home, Explorer, CandidateDetail, Compare, ActiveLearning, Methods, NotFound
-    lib/          types, data loading, filters, acquisition (TS port), csv, format, palette, guardrails
+    pages/        Home, Explorer, CandidateDetail, Compare, ActiveLearning, Methods, NotFound,
+                  Bundles, BundleView, BundleRecord
+    lib/          types, data loading, filters, acquisition (TS port), csv, format, palette, guardrails,
+                  bundle (reader of mofsift bundles), bundleSource
     styles/       global.css
   public/
     data/         release-manifest.json, candidates.json, active-learning.json, DATA_README.txt,
                   structures/pormake/*.cif, structures/dft/*.vasp
+    bundles/      index.json and one folder per mofsift bundle shipped with the site
     _headers      Cloudflare Pages headers (ignored elsewhere)
   scripts/        export_research_data.py, validate_export.py, acquisition_ref.py
   tests/          unit/ (Vitest), e2e/ (Playwright), python/ (pytest)
-  docs/           audit, provenance, limitations, guardrails, deployment, costs, release checklist, roadmap, log
+  docs/           audit, provenance, limitations, guardrails, bundles, deployment, costs, release checklist, roadmap, log
   .github/workflows/ci.yml
 ```
 
@@ -114,7 +118,7 @@ The study is a manuscript in preparation; publication status and DOI are to be c
 
 ## Acknowledgements
 
-The study used PORMAKE, Zeo++, scikit-learn, the QMOF database (Rosen et al., *Matter* 2021; *npj Comput. Mater.* 2022), VASP, ASE and pymatgen. The site uses 3Dmol.js (BSD-3-Clause; Rego & Koes, *Bioinformatics* 2015), Plotly.js (MIT), React (MIT) and React Router (MIT).
+The study used PORMAKE, Zeo++, scikit-learn, the QMOF database (Rosen et al., *Matter* 2021; *npj Comput. Mater.* 2022), VASP, ASE and pymatgen. The example bundle was computed with mofsift using PORMAKE, pyzeo (Zeo++), tblite (GFN1-xTB), RDKit, ASE and pymatgen; its precedent counts are derived from the QMOF database (CC BY 4.0). The site uses 3Dmol.js (BSD-3-Clause; Rego & Koes, *Bioinformatics* 2015), Plotly.js (MIT), React (MIT) and React Router (MIT).
 
 ## Screenshots
 
@@ -123,3 +127,5 @@ The study used PORMAKE, Zeo++, scikit-learn, the QMOF database (Rosen et al., *M
 | ![Overview](docs/screenshots/home.png) | ![Explorer](docs/screenshots/explore.png) |
 | **Candidate detail** | **Active Learning Explorer** |
 | ![Candidate](docs/screenshots/detail.png) | ![Active learning](docs/screenshots/al.png) |
+| **Bundles: a mofsift bundle** | **Bundles: a record** |
+| ![Bundle](docs/screenshots/bundle.png) | ![Bundle record](docs/screenshots/bundle-record.png) |

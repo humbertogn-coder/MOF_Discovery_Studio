@@ -1,0 +1,994 @@
+{
+  "kind": "mofsift-bundle",
+  "schema_version": "1.0.0",
+  "mofsift_version": "0.1.0.dev0",
+  "project": "pormake_small",
+  "created_utc": "2026-11-22T00:51:22Z",
+  "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+  "config": {
+    "project": "pormake_small",
+    "seed": 0,
+    "workdir": "work_pormake_small",
+    "generate": {
+      "source": "pormake",
+      "topologies": [
+        "pcu",
+        "nbo",
+        "dia"
+      ],
+      "nodes": [
+        "N16",
+        "N409"
+      ],
+      "edges": [
+        "E14",
+        "E34"
+      ],
+      "linkers": null,
+      "building_block_dir": null,
+      "cif_dir": null,
+      "max_atoms": 600
+    },
+    "qc": {
+      "min_distance": 0.7,
+      "min_distance_heavy": 1.0,
+      "nonbonded_factor": 0.8,
+      "bond_factor": 1.2,
+      "require_single_framework": true,
+      "check_valence": true,
+      "check_composition": true,
+      "max_node_rmsd": 0.3
+    },
+    "describe": {
+      "only_qc_passed": true,
+      "composition": true,
+      "geometry": {
+        "enabled": "auto",
+        "tool": "pyzeo",
+        "probe_radius": 1.86,
+        "high_accuracy": "OCC",
+        "fallback": [
+          "DEF",
+          false
+        ],
+        "timeout_minutes": null,
+        "on_missing": "skip"
+      },
+      "xtb": {
+        "enabled": "auto",
+        "method": "GFN1-xTB",
+        "periodic": true,
+        "max_atoms": 300,
+        "spin": "high_spin",
+        "electronic_temperature": 500.0,
+        "max_iterations": 500,
+        "timeout_minutes": null,
+        "on_missing": "skip"
+      }
+    },
+    "score": {
+      "components": [
+        "linker_sa",
+        "linker_sc",
+        "linker_size",
+        "linker_rotatable_bonds",
+        "precedent_topology",
+        "precedent_node",
+        "precedent_linker",
+        "precedent_pair"
+      ],
+      "strain": {
+        "enabled": false
+      },
+      "aggregate": {
+        "enabled": false,
+        "weights": {}
+      }
+    },
+    "filter": [
+      "qc_pass == True"
+    ],
+    "export": {
+      "out_dir": null,
+      "viewer_bundle": true,
+      "include_cifs": true,
+      "table_format": "csv"
+    },
+    "tools": {
+      "zeopp": null,
+      "xtb": null
+    }
+  },
+  "counts": {
+    "enumerated": 6,
+    "selected": 4,
+    "structures": 4
+  },
+  "filters": [
+    {
+      "expression": "qc_pass == True",
+      "passed": 4,
+      "rejected": 2,
+      "undecided": 0
+    }
+  ],
+  "stages": [
+    {
+      "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+      "details": {
+        "linkers": [],
+        "reused": 0,
+        "source": "pormake"
+      },
+      "finished_utc": "2026-11-22T00:50:15Z",
+      "mofsift_version": "0.1.0.dev0",
+      "n_rows": 6,
+      "notes": [],
+      "project": "pormake_small",
+      "stage": "generate",
+      "stage_config_hash": "97d6fd6eb4286f0344798d2445c3f2840dad8d1f0a3f6b94dbaa4f39193c7abe",
+      "status_counts": {
+        "failed": 0,
+        "ok": 6,
+        "skipped": 0
+      },
+      "table": "01_generate.csv",
+      "table_sha256": "669e17c88df7e52b2c44e1adf151b2c42930f4dc5be9faa8af2630ca70980fea",
+      "tools": {
+        "ase": "3.29.0",
+        "jax": "0.12.1",
+        "numpy": "2.5.5",
+        "pormake": "0.2.3",
+        "scipy": "1.18.1"
+      }
+    },
+    {
+      "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+      "details": {
+        "input_sha256": "669e17c88df7e52b2c44e1adf151b2c42930f4dc5be9faa8af2630ca70980fea",
+        "passed": 4,
+        "rejected": 2
+      },
+      "finished_utc": "2026-11-22T00:50:17Z",
+      "mofsift_version": "0.1.0.dev0",
+      "n_rows": 6,
+      "notes": [],
+      "project": "pormake_small",
+      "stage": "qc",
+      "stage_config_hash": "d3d58bde638f8c898b7daf85f50c09be42aef52814775b6ce65e922875644bc2",
+      "status_counts": {
+        "failed": 0,
+        "ok": 6,
+        "skipped": 0
+      },
+      "table": "02_qc.csv",
+      "table_sha256": "eb73c7b218950aef4c07fe0be4e96083f565e7965eb1c5a6b474153c3a0ffcec",
+      "tools": {
+        "ase": "3.29.0"
+      }
+    },
+    {
+      "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+      "details": {
+        "block": null,
+        "input_sha256": "eb73c7b218950aef4c07fe0be4e96083f565e7965eb1c5a6b474153c3a0ffcec",
+        "only": [
+          "composition",
+          "geometry",
+          "xtb"
+        ],
+        "substages": {
+          "composition": {
+            "computed": 0,
+            "from_cache": 0,
+            "not_run_because": null,
+            "reasons": {},
+            "status_counts": {
+              "failed": 0,
+              "ok": 6,
+              "skipped": 0
+            }
+          },
+          "geometry": {
+            "computed": 4,
+            "from_cache": 0,
+            "not_run_because": null,
+            "reasons": {
+              "did not pass qc": 2
+            },
+            "status_counts": {
+              "failed": 0,
+              "ok": 4,
+              "skipped": 2
+            }
+          },
+          "xtb": {
+            "computed": 3,
+            "from_cache": 0,
+            "not_run_because": null,
+            "reasons": {
+              "324 atoms; describe.xtb.max_atoms is 300": 1,
+              "did not pass qc": 2
+            },
+            "status_counts": {
+              "failed": 0,
+              "ok": 3,
+              "skipped": 3
+            }
+          }
+        }
+      },
+      "finished_utc": "2026-11-22T00:51:20Z",
+      "mofsift_version": "0.1.0.dev0",
+      "n_rows": 6,
+      "notes": [],
+      "project": "pormake_small",
+      "stage": "describe",
+      "stage_config_hash": "64c3787a91979b6e62e28da65512872e54f6c32800f99ae5c6f217a3945b1b7b",
+      "status_counts": {
+        "failed": 0,
+        "ok": 6,
+        "skipped": 0
+      },
+      "table": "03_describe.csv",
+      "table_sha256": "17c10a573279af1444e39edaac428744664a00ca15a7e227193f01957fc82047",
+      "tools": {
+        "ase": "3.29.0",
+        "pymatgen": "2026.10.24",
+        "pyzeo": "0.2.0",
+        "tblite": "0.8.0"
+      }
+    },
+    {
+      "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+      "details": {
+        "aggregate": null,
+        "input_sha256": "17c10a573279af1444e39edaac428744664a00ca15a7e227193f01957fc82047",
+        "reference": {
+          "cite": "Rosen et al., Matter 2021, 4, 1578; Rosen et al., npj Comput. Mater. 2022, 8, 195",
+          "licence": "CC BY 4.0; derived counts, not the original data",
+          "n_mofs": 10595,
+          "n_with_topology": 3912,
+          "qmof_csv_sha256": "9991b2d51d71a6cc4c97affd8ca36ac18d5b75554b4f3f1ac9ebb35bc9995f26",
+          "rows_synthesized": 16881,
+          "rows_with_mofid_decomposition": 13683,
+          "source": "QMOF database, qmof.csv (https://doi.org/10.6084/m9.figshare.13147324)"
+        },
+        "rows_with_a_value": {
+          "linker_rotatable_bonds": 6,
+          "linker_sa": 6,
+          "linker_sc": 6,
+          "linker_size": 6,
+          "precedent_linker": 6,
+          "precedent_node": 6,
+          "precedent_pair": 6,
+          "precedent_topology": 6
+        }
+      },
+      "finished_utc": "2026-11-22T00:51:22Z",
+      "mofsift_version": "0.1.0.dev0",
+      "n_rows": 6,
+      "notes": [],
+      "project": "pormake_small",
+      "stage": "score",
+      "stage_config_hash": "988a06107eb26c557d07f4c48e57f90d35fc4cc622494e6304209fa50a69c797",
+      "status_counts": {
+        "failed": 0,
+        "ok": 6,
+        "skipped": 0
+      },
+      "table": "04_score.csv",
+      "table_sha256": "0ae154bd90caa03c59a6b43dcb2500899b0a3ec47e08e282744b971ac88173f2",
+      "tools": {
+        "rdkit": "2026.9.2"
+      }
+    },
+    {
+      "config_hash": "e73a8dd89898cac05bacda9e2cfea74efc9b98a726ff4ec5fd9866fdec796764",
+      "details": {
+        "filters": [
+          {
+            "expression": "qc_pass == True",
+            "passed": 4,
+            "rejected": 2,
+            "undecided": 0
+          }
+        ],
+        "input_sha256": "0ae154bd90caa03c59a6b43dcb2500899b0a3ec47e08e282744b971ac88173f2",
+        "rejected": 2,
+        "selected": 4
+      },
+      "finished_utc": "2026-11-22T00:51:22Z",
+      "mofsift_version": "0.1.0.dev0",
+      "n_rows": 6,
+      "notes": [],
+      "project": "pormake_small",
+      "stage": "filter",
+      "stage_config_hash": "44baeaf30a929131cc5bce00f9dee3cfcc62c88f06e7f18dde43d12cf6185e5f",
+      "status_counts": {
+        "failed": 0,
+        "ok": 6,
+        "skipped": 0
+      },
+      "table": "05_filter.csv",
+      "table_sha256": "004cd469b46d8ca23c7e900bcbc56643c02495b0aa3ecd66dfb734343c04ff0c",
+      "tools": {}
+    }
+  ],
+  "tools": {
+    "python": "3.12.3",
+    "ase": "3.29.0",
+    "jax": "0.12.1",
+    "numpy": "2.5.5",
+    "pormake": "0.2.3",
+    "scipy": "1.18.1",
+    "pymatgen": "2026.10.24",
+    "pyzeo": "0.2.0",
+    "tblite": "0.8.0",
+    "rdkit": "2026.9.2"
+  },
+  "columns": [
+    {
+      "name": "id",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Record ID; the key of the table. It depends only on what defines the candidate."
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Readable label: topology__nodes__edges, or the file name."
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Where the structure comes from: pormake or cifs."
+    },
+    {
+      "name": "topology",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Net the structure was assembled on; empty for existing CIFs."
+    },
+    {
+      "name": "nodes",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Node building blocks, + between several."
+    },
+    {
+      "name": "edges",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Edge building blocks, + between several; empty without edges."
+    },
+    {
+      "name": "source_file",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Original file inside cif_dir; empty for assembled structures."
+    },
+    {
+      "name": "n_atoms",
+      "type": "integer",
+      "group": "generate",
+      "unit": null,
+      "description": "Atoms in the unit cell."
+    },
+    {
+      "name": "formula",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Formula of the unit cell, Hill order."
+    },
+    {
+      "name": "expected_formula",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Sum of the building blocks; empty for existing CIFs."
+    },
+    {
+      "name": "linker_smiles",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Canonical SMILES of the linkers when they are known, ; between several."
+    },
+    {
+      "name": "node_rmsd",
+      "type": "number",
+      "group": "generate",
+      "unit": "angstrom",
+      "description": "Largest node-to-vertex misfit reported by PORMAKE."
+    },
+    {
+      "name": "cif_path",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Path of the structure file, relative to the folder that holds the table."
+    },
+    {
+      "name": "generate_status",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Whether the structure was built or read: ok, skipped or failed."
+    },
+    {
+      "name": "generate_skip_reason",
+      "type": "string",
+      "group": "generate",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "density",
+      "type": "number",
+      "group": "qc",
+      "unit": "g/cm3",
+      "description": "Density from the cell and the atomic masses."
+    },
+    {
+      "name": "volume",
+      "type": "number",
+      "group": "qc",
+      "unit": "angstrom3",
+      "description": "Cell volume."
+    },
+    {
+      "name": "cell_a",
+      "type": "number",
+      "group": "qc",
+      "unit": "angstrom",
+      "description": "Cell length a."
+    },
+    {
+      "name": "cell_b",
+      "type": "number",
+      "group": "qc",
+      "unit": "angstrom",
+      "description": "Cell length b."
+    },
+    {
+      "name": "cell_c",
+      "type": "number",
+      "group": "qc",
+      "unit": "angstrom",
+      "description": "Cell length c."
+    },
+    {
+      "name": "cell_alpha",
+      "type": "number",
+      "group": "qc",
+      "unit": "degree",
+      "description": "Cell angle alpha."
+    },
+    {
+      "name": "cell_beta",
+      "type": "number",
+      "group": "qc",
+      "unit": "degree",
+      "description": "Cell angle beta."
+    },
+    {
+      "name": "cell_gamma",
+      "type": "number",
+      "group": "qc",
+      "unit": "degree",
+      "description": "Cell angle gamma."
+    },
+    {
+      "name": "qc_min_distance",
+      "type": "number",
+      "group": "qc",
+      "unit": "angstrom",
+      "description": "Shortest interatomic distance."
+    },
+    {
+      "name": "qc_n_close_pairs",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Pairs of atoms closer than qc.min_distance."
+    },
+    {
+      "name": "qc_n_overlaps",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Heavy-heavy or H-H pairs closer than qc.min_distance_heavy."
+    },
+    {
+      "name": "qc_n_nonbonded_contacts",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Non-bonded pairs closer than allowed."
+    },
+    {
+      "name": "qc_n_components",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Connected components of the bond network."
+    },
+    {
+      "name": "qc_n_isolated_atoms",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Atoms without any bond."
+    },
+    {
+      "name": "qc_n_bad_h",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "H atoms that do not have exactly one neighbour."
+    },
+    {
+      "name": "qc_n_bad_c",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "C atoms with fewer than 2 or more than 4 non-metal neighbours."
+    },
+    {
+      "name": "qc_n_short_bonds",
+      "type": "integer",
+      "group": "qc",
+      "unit": null,
+      "description": "Compressed covalent bonds (reported, not a check)."
+    },
+    {
+      "name": "qc_composition_ok",
+      "type": "boolean",
+      "group": "qc",
+      "unit": null,
+      "description": "The formula equals the sum of the building blocks."
+    },
+    {
+      "name": "qc_node_rmsd_ok",
+      "type": "boolean",
+      "group": "qc",
+      "unit": null,
+      "description": "The node misfit is within qc.max_node_rmsd."
+    },
+    {
+      "name": "qc_pass",
+      "type": "boolean",
+      "group": "qc",
+      "unit": null,
+      "description": "No enabled structural check failed. Not a statement about stability or synthesis."
+    },
+    {
+      "name": "qc_reasons",
+      "type": "string",
+      "group": "qc",
+      "unit": null,
+      "description": "The failed checks, separated by ; ."
+    },
+    {
+      "name": "qc_status",
+      "type": "string",
+      "group": "qc",
+      "unit": null,
+      "description": "Whether the checks ran: ok, skipped or failed."
+    },
+    {
+      "name": "qc_skip_reason",
+      "type": "string",
+      "group": "qc",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "primary_metal",
+      "type": "string",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Most abundant metal (ties: alphabetical)."
+    },
+    {
+      "name": "metals",
+      "type": "string",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "All metals present, + between them."
+    },
+    {
+      "name": "n_metal_atoms",
+      "type": "integer",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Metal atoms in the unit cell."
+    },
+    {
+      "name": "metal_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Metal atoms as a fraction of all atoms."
+    },
+    {
+      "name": "n_transition_metal_atoms",
+      "type": "integer",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "d-block atoms in the unit cell."
+    },
+    {
+      "name": "has_open_shell_3d_metal",
+      "type": "boolean",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "The primary metal is Ti-Cu. A flag on the composition, not a computed spin state."
+    },
+    {
+      "name": "c_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "C atoms as a fraction of all atoms."
+    },
+    {
+      "name": "h_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "H atoms as a fraction of all atoms."
+    },
+    {
+      "name": "n_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "N atoms as a fraction of all atoms."
+    },
+    {
+      "name": "o_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "O atoms as a fraction of all atoms."
+    },
+    {
+      "name": "heteroatom_fraction",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "N, O, S, F, Cl, Br and I atoms as a fraction of all atoms."
+    },
+    {
+      "name": "mean_atomic_number",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Mean atomic number over all atoms."
+    },
+    {
+      "name": "std_atomic_number",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Spread of the atomic number over all atoms."
+    },
+    {
+      "name": "mean_electronegativity",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Mean Pauling electronegativity over all atoms."
+    },
+    {
+      "name": "std_electronegativity",
+      "type": "number",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Spread of the Pauling electronegativity over all atoms."
+    },
+    {
+      "name": "describe_composition_status",
+      "type": "string",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Whether the composition descriptors were computed: ok, skipped or failed."
+    },
+    {
+      "name": "describe_composition_skip_reason",
+      "type": "string",
+      "group": "describe.composition",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "zeo_high_accuracy",
+      "type": "string",
+      "group": "describe.geometry",
+      "unit": null,
+      "description": "Zeo++ accuracy setting that produced this row: OCC, DEF or off."
+    },
+    {
+      "name": "lcd",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "angstrom",
+      "description": "Largest cavity diameter (largest included sphere)."
+    },
+    {
+      "name": "pld",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "angstrom",
+      "description": "Pore limiting diameter (largest free sphere)."
+    },
+    {
+      "name": "lcd_free_path",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "angstrom",
+      "description": "Largest included sphere along the free-sphere path."
+    },
+    {
+      "name": "accessible_surface_m2_g",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "m2/g",
+      "description": "Surface accessible to the probe."
+    },
+    {
+      "name": "accessible_surface_m2_cm3",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "m2/cm3",
+      "description": "Surface accessible to the probe."
+    },
+    {
+      "name": "accessible_volume_fraction",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": null,
+      "description": "Fraction of the cell volume accessible to the centre of the probe."
+    },
+    {
+      "name": "accessible_volume_cm3_g",
+      "type": "number",
+      "group": "describe.geometry",
+      "unit": "cm3/g",
+      "description": "Volume accessible to the centre of the probe."
+    },
+    {
+      "name": "describe_geometry_status",
+      "type": "string",
+      "group": "describe.geometry",
+      "unit": null,
+      "description": "Whether the pore geometry was computed: ok, skipped or failed."
+    },
+    {
+      "name": "describe_geometry_skip_reason",
+      "type": "string",
+      "group": "describe.geometry",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "xtb_gap",
+      "type": "number",
+      "group": "describe.xtb",
+      "unit": "eV",
+      "description": "xtb_lumo minus xtb_homo from periodic GFN-xTB. A proxy, not a DFT or measured band gap; comparable between rows only when xtb_unpaired_electrons is 0."
+    },
+    {
+      "name": "xtb_homo",
+      "type": "number",
+      "group": "describe.xtb",
+      "unit": "eV",
+      "description": "Highest doubly occupied level."
+    },
+    {
+      "name": "xtb_lumo",
+      "type": "number",
+      "group": "describe.xtb",
+      "unit": "eV",
+      "description": "Lowest level that is not doubly occupied."
+    },
+    {
+      "name": "xtb_unpaired_electrons",
+      "type": "integer",
+      "group": "describe.xtb",
+      "unit": null,
+      "description": "Unpaired electrons used in the calculation (a rule of thumb, not computed)."
+    },
+    {
+      "name": "describe_xtb_status",
+      "type": "string",
+      "group": "describe.xtb",
+      "unit": null,
+      "description": "Whether the xTB calculation ran: ok, skipped or failed."
+    },
+    {
+      "name": "describe_xtb_skip_reason",
+      "type": "string",
+      "group": "describe.xtb",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "linker_sa",
+      "type": "number",
+      "group": "score",
+      "unit": null,
+      "description": "SA score of the linker, 1 (easy) to 10 (hard). Smaller is better."
+    },
+    {
+      "name": "linker_sc",
+      "type": "number",
+      "group": "score",
+      "unit": null,
+      "description": "SCScore of the linker, 1 (simple) to 5 (complex). Smaller is better."
+    },
+    {
+      "name": "linker_size",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Heavy atoms of the linker. Smaller is better."
+    },
+    {
+      "name": "linker_rotatable_bonds",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Rotatable bonds of the linker. Smaller is better."
+    },
+    {
+      "name": "precedent_topology",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Distinct synthesised MOFs in the reference with this topology. Larger is better."
+    },
+    {
+      "name": "precedent_node",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Distinct synthesised MOFs in the reference with this primary metal. Information only: it does not separate synthesised from hypothetical MOFs."
+    },
+    {
+      "name": "precedent_linker",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Distinct synthesised MOFs in the reference with this linker. Larger is better."
+    },
+    {
+      "name": "precedent_pair",
+      "type": "integer",
+      "group": "score",
+      "unit": null,
+      "description": "Distinct synthesised MOFs in the reference with this linker and metal. Larger is better."
+    },
+    {
+      "name": "score_notes",
+      "type": "string",
+      "group": "score",
+      "unit": null,
+      "description": "Why a component is empty for this row."
+    },
+    {
+      "name": "score_status",
+      "type": "string",
+      "group": "score",
+      "unit": null,
+      "description": "Whether at least one component was computed: ok, skipped or failed."
+    },
+    {
+      "name": "score_skip_reason",
+      "type": "string",
+      "group": "score",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    },
+    {
+      "name": "filter_pass",
+      "type": "boolean",
+      "group": "filter",
+      "unit": null,
+      "description": "The row satisfies every filter of the config. Empty when there are no filters."
+    },
+    {
+      "name": "filter_rejected_by",
+      "type": "string",
+      "group": "filter",
+      "unit": null,
+      "description": "The filters the row did not satisfy, with the missing columns when undecided."
+    },
+    {
+      "name": "filter_status",
+      "type": "string",
+      "group": "filter",
+      "unit": null,
+      "description": "Whether the filters were applied: ok, skipped or failed."
+    },
+    {
+      "name": "filter_skip_reason",
+      "type": "string",
+      "group": "filter",
+      "unit": null,
+      "description": "Why, when the status is not ok."
+    }
+  ],
+  "table": {
+    "path": "candidates.csv",
+    "format": "csv",
+    "n_rows": 4,
+    "n_columns": 85,
+    "sha256": "17d43a468e9eef330d7bda1956742177e43b9b2d47113a4ceedef13b133db9e4"
+  },
+  "records": {
+    "path": "candidates.json",
+    "n_records": 4,
+    "sha256": "a94200b7c4a7ab0574b2a7d6faaf940ee3b67e6b023d9a9a9975d1bc765b23d8"
+  },
+  "structures": {
+    "directory": "structures",
+    "format": "cif",
+    "n_files": 4
+  },
+  "files": {
+    "candidates.csv": {
+      "bytes": 3311,
+      "sha256": "17d43a468e9eef330d7bda1956742177e43b9b2d47113a4ceedef13b133db9e4"
+    },
+    "candidates.json": {
+      "bytes": 8933,
+      "sha256": "a94200b7c4a7ab0574b2a7d6faaf940ee3b67e6b023d9a9a9975d1bc765b23d8"
+    },
+    "structures/ms-678e931c571c8679.cif": {
+      "bytes": 4318,
+      "sha256": "bafce7c9df0300a3b13f252d4008c5de98361d2d6d5015a3f229351093642a02"
+    },
+    "structures/ms-76e2e784339a5138.cif": {
+      "bytes": 15127,
+      "sha256": "517d32c3cccfa8d9a0d1d2dfbd58ab9a4dc9a3bed60e181559b7144f7d1a6a7f"
+    },
+    "structures/ms-85df08093aa5d8a1.cif": {
+      "bytes": 22511,
+      "sha256": "e02bf46b2e500f2abc61d0a27f3d308d7673c934434cd4c7f850e262a842b87c"
+    },
+    "structures/ms-a0678e0f108f6e4d.cif": {
+      "bytes": 6112,
+      "sha256": "eee88ae0fafd6000591e47d230fd389f202f6aa0de17cccf4baaefab4cc8cd0b"
+    }
+  },
+  "sources": [],
+  "notices": [
+    "Every structure is hypothetical: assembled from building blocks or supplied by the user. None is claimed to be stable or synthesisable.",
+    "qc_pass means the geometry passed geometric and compositional checks. It is not a statement about stability.",
+    "xtb_gap is a semi-empirical proxy computed on an unrelaxed geometry, not a DFT or measured band gap. For open-shell transition-metal frameworks treat it as unvalidated; rows with xtb_unpaired_electrons other than 0 are not comparable with the others.",
+    "A band gap, from any method, is not electrical conductivity.",
+    "The score columns are separate indicators of synthetic accessibility. None of them, and not score_aggregate, is a probability of synthesis."
+  ],
+  "third_party": [
+    {
+      "used_for": "precedent_* columns (counts computed by mofsift, not the original data)",
+      "source": "QMOF database, qmof.csv (https://doi.org/10.6084/m9.figshare.13147324)",
+      "licence": "CC BY 4.0; derived counts, not the original data",
+      "cite": "Rosen et al., Matter 2021, 4, 1578; Rosen et al., npj Comput. Mater. 2022, 8, 195"
+    }
+  ],
+  "warnings": []
+}

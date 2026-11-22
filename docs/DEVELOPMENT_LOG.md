@@ -49,3 +49,30 @@
   - Open Graph social card (`public/og-image.png`, rendered from the live viewer);
   - optional Cloudflare Web Analytics via `CF_BEACON_TOKEN`.
 - Guardrails: added `bandEdge`, `dos`, `lastGeometry`, `retro` and `spinSolutions`. xTB data are still not shown.
+
+## 2026-11-21 — Bundles section (branch `generic-bundles`, not released)
+
+The Studio can now show the result of any [mofsift](https://github.com/humbertogn-coder/mofsift) run. The work is on a branch; the deployed site is unchanged until the branch is merged. No version number was assigned.
+
+- **New section "Bundles"** ([BUNDLES.md](BUNDLES.md)), separate from the study pages:
+  - `/bundles`: open the folder written by `mofsift export` from the reader's computer (folder picker or drop), or a bundle shipped with the site;
+  - `/bundles/<id>`: counts, applied filters, searchable and sortable table with a column chooser, meaning of the shown columns, data from others with licence and citation, provenance of the run;
+  - `/bundles/<id>/<record>`: 3D structure in the existing viewer, values at a glance, and every value grouped by stage with its meaning and, when a stage did not run, the recorded reason.
+- **Reader** (`src/lib/bundle.ts`, no dependency on the mofsift package). Column names, units, meanings and groups come from the manifest of the bundle. The SHA-256 of `candidates.json` and of each structure file is compared with the manifest; records are checked against the column dictionary; only files listed in the manifest are read, with plain relative names. Missing values stay `null` and are shown as a dash.
+- **A folder from the reader's computer is read in the browser and never uploaded.** An end-to-end test checks that no request for a file of the bundle is made.
+- **Example bundle** `public/bundles/pormake_small/`: the public example of mofsift (commit `f658178`), 4 records with CIFs. It holds no result of the study. `mofsift validate` accepts it, and a unit test compares every file with the manifest. `.gitattributes` keeps git from rewriting its line endings.
+- **Viewer**: `StructureViewer` accepts the text of a structure from a caller (`loadText`) and an optional download address. Its behaviour on the study pages is unchanged.
+- **Guardrails**: added `bundle`, `bundleLocal`, `bundleChecksum`, `bundleMissing`, `xtbProxy` and `scoreComponents`. The study pages still show no xTB data; xTB columns appear only inside a bundle, with the `xtbProxy` text.
+- **Tests**: Vitest 158 (85 new: reader, sources, pages); Playwright 41 across desktop and mobile (16 new: listing, table, record with CIF rendering, downloads, a folder from the computer, a changed bundle and a changed CIF refused, overflow). The new end-to-end tests also pass on a sub-path build (`/MOF_Discovery_Studio/`). A synthetic bundle of 40,000 records (80 MB) opened in about 2 s; sorting and searching took about 0.1 s.
+
+**Decisions**
+- The study pages and the study data are untouched. The Bundles section has its own pages and its own store.
+- The Studio does not judge the values of a bundle. The full check is `mofsift validate`.
+- The CI of this repository does not install mofsift. The shipped bundle is checked against its own manifest by a unit test, and with `mofsift validate` by hand before it is added.
+- Column explanations are below the table and not in header tooltips, because a tooltip inside a scrolling table is cut off.
+- Only search, sort and a column chooser. Selecting records is the job of `mofsift filter`.
+
+**Not done**
+- Range filters, plots and comparison of records for bundles (see [ROADMAP.md](ROADMAP.md), item 10).
+- Reading the Parquet or CSV table; the Studio reads `candidates.json`.
+- A bundle from the computer is not kept between visits.
