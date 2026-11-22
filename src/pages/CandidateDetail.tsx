@@ -13,7 +13,7 @@ import type { Candidate, Manifest } from '../lib/types';
 const StructureViewer = lazy(() => import('../components/StructureViewer'));
 const ElectronicStructure = lazy(() => import('../components/ElectronicStructure'));
 
-const GEO_LABEL: Record<StructureSource['provenance'], string> = { pormake_generated: 'PORMAKE-generated', dft_relaxed: 'DFT-relaxed', dft_relaxation_last_step: 'Last DFT step (not accepted)' };
+const GEO_LABEL: Record<StructureSource['provenance'], string> = { pormake_generated: 'PORMAKE-generated', dft_relaxed: 'DFT-relaxed', dft_relaxation_last_step: 'Last DFT step (not accepted)', bundle: 'Bundle structure file' };
 
 export function structureSources(c: Candidate): StructureSource[] {
   const s: StructureSource[] = [];

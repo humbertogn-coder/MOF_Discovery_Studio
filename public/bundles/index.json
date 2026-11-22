@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "bundles": [
+    {
+      "id": "pormake_small",
+      "title": "mofsift example: frameworks from PORMAKE building blocks",
+      "description": "Six candidates assembled from two public PORMAKE nodes (Zn4O and the Cu paddlewheel) and two linkers on three nets; the four that pass the structural checks are in the bundle. Made with examples/pormake_small.yaml of mofsift. It contains no result of the study."
+    }
+  ]
+}

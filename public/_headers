@@ -6,6 +6,10 @@
   Cache-Control: public, max-age=300, must-revalidate
   Access-Control-Allow-Origin: *
 
+/bundles/*
+  Cache-Control: public, max-age=300, must-revalidate
+  Access-Control-Allow-Origin: *
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

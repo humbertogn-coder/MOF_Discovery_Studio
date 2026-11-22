@@ -40,6 +40,14 @@ Electronic conductivity, carrier mobility, charge-transport mechanism (band-like
 - Scenario mode on the iteration-3 predictions is an exploration. The study selected no iteration-3 batch.
 - The acquisition score is a ranking heuristic, not an energy, a conductivity or a probability.
 
+## Bundles (results of mofsift runs)
+
+- The Bundles section shows what a bundle contains. The Studio verifies that the files are the ones the manifest describes (checksums) and that the values have the declared kind. It does **not** recompute, validate or judge any value.
+- A bundle opened from a reader's computer is that reader's data. It is not part of the study and is not reviewed by the authors.
+- The xTB gap of a bundle is a semi-empirical proxy computed on the generated geometry, without relaxation. It is not comparable with the PBE values of the study and is unvalidated for open-shell frameworks.
+- The synthetic-accessibility components (linker scores and counts of precedents) are separate indicators. None of them is a probability of synthesis.
+- The example bundle shipped with the site is a demonstration of the format. Its frameworks are hypothetical and none was computed with DFT.
+
 ## Not included
 
 - xTB results (a different method; never mixed with PBE values).

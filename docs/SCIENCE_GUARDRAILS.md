@@ -156,3 +156,31 @@ This file quotes, verbatim, every piece of scientific wording used in tooltips, 
 ### `spinSolutions`
 
 > Spin solutions: several initial magnetic configurations were computed on the same geometry; the label is the lowest-energy converged one. The gap can change by several tenths of an eV between solutions, which is a known sensitivity of PBE for open-shell frameworks.
+
+## Bundles (exports of mofsift)
+
+These texts are shown in the Bundles section, which displays any bundle written by `mofsift export`. They hold for every bundle, whatever its content; the notices stored in the manifest of a bundle are shown next to them.
+
+### `bundle`
+
+> A bundle is the export of a mofsift run: a table of candidates, their structure files and a manifest that records the config, the filters, the tool versions and the meaning of every column. This viewer shows what the bundle contains; it does not recompute or check the values.
+
+### `bundleLocal`
+
+> A bundle opened from your computer is read by your browser only. Its files are not uploaded, and the bundle is not kept after you reload the page.
+
+### `bundleChecksum`
+
+> Checksum: the file was compared with the SHA-256 recorded in the manifest of the bundle. A match means the file is the one the manifest describes; it says nothing about whether the values are correct.
+
+### `bundleMissing`
+
+> A dash means the value was not computed for this candidate; the status of the stage gives the reason. It never means zero.
+
+### `xtbProxy`
+
+> xTB gap: a semi-empirical (GFN-xTB) proxy computed on the geometry of the bundle, without relaxation. It is not a DFT or measured band gap. For frameworks with unpaired electrons it is the distance from doubly to singly occupied levels and is not comparable with the other rows.
+
+### `scoreComponents`
+
+> Synthetic-accessibility components are separate indicators (linker scores, and counts of precedents among synthesised MOFs). None of them, and no aggregate of them, is a probability that a framework can be made.

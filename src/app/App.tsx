@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BundleProvider } from './BundleContext';
 import { CompareProvider } from './CompareContext';
 import { DataProvider } from './DataContext';
 import Layout from './Layout';
@@ -13,12 +14,16 @@ const Compare = lazy(() => import('../pages/Compare'));
 const ActiveLearning = lazy(() => import('../pages/ActiveLearning'));
 const Methods = lazy(() => import('../pages/Methods'));
 const DftCampaign = lazy(() => import('../pages/DftCampaign'));
+const Bundles = lazy(() => import('../pages/Bundles'));
+const BundleView = lazy(() => import('../pages/BundleView'));
+const BundleRecordPage = lazy(() => import('../pages/BundleRecord'));
 
 export default function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
   return (
     <DataProvider>
       <CompareProvider>
+       <BundleProvider>
         <BrowserRouter basename={basename}>
           <Suspense fallback={<Loading what="page" />}>
             <Routes>
@@ -30,11 +35,15 @@ export default function App() {
                 <Route path="active-learning" element={<ActiveLearning />} />
                 <Route path="methods" element={<Methods />} />
                 <Route path="dft-campaign" element={<DftCampaign />} />
+                <Route path="bundles" element={<Bundles />} />
+                <Route path="bundles/:key" element={<BundleView />} />
+                <Route path="bundles/:key/:recordId" element={<BundleRecordPage />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </Suspense>
         </BrowserRouter>
+       </BundleProvider>
       </CompareProvider>
     </DataProvider>
   );

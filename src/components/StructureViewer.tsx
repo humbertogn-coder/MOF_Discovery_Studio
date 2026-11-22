@@ -28,13 +28,24 @@ const STYLE_SPEC: Record<ViewStyle, object> = {
 };
 
 export interface StructureSource {
+  /** Path of the file in the study data, or any text that identifies the structure when `loadText` is given. */
   path: string;
   format: 'cif' | 'vasp';
   label: string;
-  provenance: 'pormake_generated' | 'dft_relaxed' | 'dft_relaxation_last_step';
+  provenance: 'pormake_generated' | 'dft_relaxed' | 'dft_relaxation_last_step' | 'bundle';
 }
 
-export default function StructureViewer({ source, expectedAtoms, title }: { source: StructureSource; expectedAtoms?: number | null; title: string }) {
+interface ViewerProps {
+  source: StructureSource;
+  expectedAtoms?: number | null;
+  title: string;
+  /** Returns the text of the structure file. Default: fetch `source.path` from the study data. */
+  loadText?: () => Promise<string>;
+  /** Address offered for download when the structure cannot be shown; null for none. Default: the study file. */
+  downloadUrl?: string | null;
+}
+
+export default function StructureViewer({ source, expectedAtoms, title, loadText, downloadUrl }: ViewerProps) {
   const host = useRef<HTMLDivElement>(null);
   const viewer = useRef<any>(null);
   const model = useRef<any>(null);
@@ -78,7 +89,7 @@ export default function StructureViewer({ source, expectedAtoms, title }: { sour
       return;
     }
     setState('loading');
-    Promise.all([load3Dmol(), loadStructureText(source.path)])
+    Promise.all([load3Dmol(), loadText ? loadText() : loadStructureText(source.path)])
       .then(([lib, txt]) => {
         if (!alive || !host.current) return;
         host.current.innerHTML = '';
@@ -134,7 +145,7 @@ export default function StructureViewer({ source, expectedAtoms, title }: { sour
     viewer.current?.zoomTo();
     viewer.current?.render();
   };
-  const url = safeStructureUrl(source.path);
+  const url = downloadUrl !== undefined ? downloadUrl : safeStructureUrl(source.path);
   const mismatch = nAtoms !== null && expectedAtoms != null && nAtoms !== expectedAtoms;
 
   return (

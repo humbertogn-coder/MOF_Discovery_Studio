@@ -20,7 +20,7 @@ The production build (`npm run build` → `dist/`, about 4 MB and 164 files) is 
 Notes:
 
 - **SPA deep links.** Do not add a `404.html`. When none exists, Pages serves `index.html` for unknown paths, so links such as `/candidate/pcu__Zn-N16__short-H` work on reload.
-- `public/_headers` sets long-lived caching for hashed assets, short caching for `/data/*`, and basic security headers. Other hosts ignore it.
+- `public/_headers` sets long-lived caching for hashed assets, short caching for `/data/*` and `/bundles/*`, and basic security headers. Other hosts ignore it.
 - Direct upload without Git: `npx wrangler pages deploy dist --project-name mof-discovery-studio` (requires a Cloudflare login on your machine).
 - Docs: https://developers.cloudflare.com/pages/ — limits: https://developers.cloudflare.com/pages/platform/limits/
 
