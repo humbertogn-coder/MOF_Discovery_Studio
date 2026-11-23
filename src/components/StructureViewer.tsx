@@ -78,7 +78,7 @@ export default function StructureViewer({ source, expectedAtoms, title, loadText
     v.setStyle({}, STYLE_SPEC[style]);
     if (!showH) v.setStyle({ elem: 'H' }, {});
     v.removeUnitCell?.(model.current);
-    if (showCell) v.addUnitCell(model.current, { box: { color: '#0f766e', linewidth: 1.5 }, astyle: { hidden: true }, bstyle: { hidden: true }, cstyle: { hidden: true } });
+    if (showCell) v.addUnitCell(model.current, { box: { color: '#500000', linewidth: 1.5 }, astyle: { hidden: true }, bstyle: { hidden: true }, cstyle: { hidden: true } });
     v.render();
   }, [style, showCell, showH]);
 

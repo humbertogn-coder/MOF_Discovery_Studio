@@ -11,14 +11,14 @@ function loadPlotly(): Promise<PlotlyLib> {
 
 export const CHART_FONT = '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 export const baseLayout = {
-  font: { family: CHART_FONT, size: 12, color: '#334155' },
+  font: { family: CHART_FONT, size: 12, color: '#3e3e42' },
   paper_bgcolor: 'rgba(0,0,0,0)',
-  plot_bgcolor: '#fcfcfb',
+  plot_bgcolor: '#ffffff',
   margin: { l: 56, r: 16, t: 16, b: 52 },
-  hoverlabel: { bgcolor: '#0f2237', bordercolor: '#0f2237', font: { color: '#f8fafc', family: CHART_FONT } },
+  hoverlabel: { bgcolor: '#1d1d1f', bordercolor: '#1d1d1f', font: { color: '#f5f5f7', family: CHART_FONT } },
   legend: { orientation: 'h', y: -0.22, x: 0, font: { size: 12 } },
-  xaxis: { gridcolor: '#e5e7eb', zerolinecolor: '#cbd5e1', linecolor: '#94a3b8', ticks: 'outside', tickcolor: '#94a3b8' },
-  yaxis: { gridcolor: '#e5e7eb', zerolinecolor: '#cbd5e1', linecolor: '#94a3b8', ticks: 'outside', tickcolor: '#94a3b8' },
+  xaxis: { gridcolor: '#ececef', zerolinecolor: '#d2d2d7', linecolor: '#a1a1a6', ticks: 'outside', tickcolor: '#a1a1a6' },
+  yaxis: { gridcolor: '#ececef', zerolinecolor: '#d2d2d7', linecolor: '#a1a1a6', ticks: 'outside', tickcolor: '#a1a1a6' },
 };
 
 export function PlotlyChart({ data, layout, height = 380, onPointClick, ariaLabel, description }: {

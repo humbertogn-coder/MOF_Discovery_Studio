@@ -31,6 +31,10 @@ test('the Bundles section lists the example and opens it @mobile', async ({ page
   await expect(page.locator('.bundle-table tbody tr')).toHaveCount(manifest.counts.selected);
   await expect(page.locator('.stat-n').first()).toHaveText(String(manifest.counts.selected));
   await expect(page.getByText('candidates.json matches the checksum in the manifest')).toBeVisible();
+  // one sentence is always visible; the full texts are folded under it
+  await expect(page.getByText(/no score is a probability of synthesis/)).toBeVisible();
+  await expect(page.getByText(/is a probability that a framework can be made/)).toBeHidden();
+  await page.locator('summary', { hasText: 'What the values mean' }).click();
   await expect(page.getByText(/is a probability that a framework can be made/)).toBeVisible();
   await expect(page.getByText(/not implied by a small predicted or computed band gap/)).toBeVisible();
   expect(errors).toEqual([]);
@@ -100,6 +104,7 @@ test('a record page renders the structure file of the bundle and explains every 
     await expect(page.getByRole('heading', { level: 3, name: group })).toBeVisible();
   }
   await expect(page.getByRole('region', { name: 'xTB electronic proxies' }).getByRole('row', { name: /^xtb_gap/ })).toContainText(`${small.xtb_gap} eV`);
+  await page.locator('summary', { hasText: 'What the values mean' }).click();
   await expect(page.getByText(/It is not a DFT or measured band gap/).first()).toBeVisible();
   expect(errors).toEqual([]);
 });

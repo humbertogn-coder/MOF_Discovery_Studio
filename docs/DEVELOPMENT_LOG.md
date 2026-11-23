@@ -76,3 +76,15 @@ The Studio can now show the result of any [mofsift](https://github.com/humbertog
 - Range filters, plots and comparison of records for bundles (see [ROADMAP.md](ROADMAP.md), item 10).
 - Reading the Parquet or CSV table; the Studio reads `candidates.json`.
 - A bundle from the computer is not kept between visits.
+
+## 2026-11-23 — Cleaner design in Texas A&M colours (branch `generic-bundles`)
+
+Asked by the owner: a more minimal look, so that the pages confuse less, in the colours of Texas A&M. Same pages, same data, same functions.
+
+- **Colours:** Aggie maroon `#500000` with white and neutral greys, set as tokens in `src/styles/global.css` (`--maroon`, `--ink`, greys). No logo, seal or wordmark of the university is used; those need its permission. The logo and favicon of the site are the same drawing in maroon.
+- **Less on the page:** white header with a maroon rule instead of a dark bar; white hero; cards and statistics without shadows; badges as quiet outlines, with colour only where it carries meaning (DFT accepted, not accepted, out of distribution); callouts as a thin rule on the left, with a fill only for warnings.
+- **Notices folded, never removed:** a new `Notice` component shows one sentence and folds the rest under "More". Used on the home page (the headline guardrail stays visible), the Active learning page and the bundle pages. New guardrail `bundleLead`, the one visible sentence above the values of a bundle; the full texts (`xtbProxy`, `scoreComponents`, `noConductivity`) and the notices of the bundle are under "What the values mean".
+- **Home page:** shorter introduction, four numbers instead of five, the workflow as five plain steps, and "what this site does" with the level-of-theory notes folded under "About this data".
+- **Charts:** neutral frame; on the home page predictions in grey and accepted DFT labels in maroon. The categorical palette of the Explorer and the benchmark is unchanged: it was validated for colour-blind readers and distinguishes up to eight series.
+- README screenshots retaken. `public/og-image.png` (the card shown when a link is shared) still has the old colours.
+- Tests: Vitest 159, Playwright 41 (desktop and mobile), `npm run check` pass. The browser tests of the bundle pages now open the folded notice before checking its texts.

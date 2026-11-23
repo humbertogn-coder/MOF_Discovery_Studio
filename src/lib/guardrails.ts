@@ -66,6 +66,8 @@ export const G = {
     'xTB gap: a semi-empirical (GFN-xTB) proxy computed on the geometry of the bundle, without relaxation. It is not a DFT or measured band gap. For frameworks with unpaired electrons it is the distance from doubly to singly occupied levels and is not comparable with the other rows.',
   scoreComponents:
     'Synthetic-accessibility components are separate indicators (linker scores, and counts of precedents among synthesised MOFs). None of them, and no aggregate of them, is a probability that a framework can be made.',
+  bundleLead:
+    'These are screening values from fast methods on hypothetical, unrelaxed structures. A small gap is not conductivity, and no score is a probability of synthesis.',
 } as const;
 
 export type GuardrailKey = keyof typeof G;

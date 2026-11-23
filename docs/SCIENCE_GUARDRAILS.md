@@ -184,3 +184,9 @@ These texts are shown in the Bundles section, which displays any bundle written 
 ### `scoreComponents`
 
 > Synthetic-accessibility components are separate indicators (linker scores, and counts of precedents among synthesised MOFs). None of them, and no aggregate of them, is a probability that a framework can be made.
+
+### `bundleLead`
+
+The sentence that is always visible above the values of a bundle; the full texts above are folded under it.
+
+> These are screening values from fast methods on hypothetical, unrelaxed structures. A small gap is not conductivity, and no score is a probability of synthesis.

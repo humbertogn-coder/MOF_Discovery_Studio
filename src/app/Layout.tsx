@@ -37,13 +37,13 @@ export default function Layout() {
       <header className="site-header">
         <div className="wrap header-inner">
           <Link to="/" className="brand" aria-label="MOF Discovery Studio, home">
-            <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
-              <rect width="32" height="32" rx="7" fill="#132b45" />
-              <g stroke="#2dd4bf" strokeWidth="2" fill="none">
+            <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+              <rect width="32" height="32" rx="6" fill="#500000" />
+              <g stroke="#ffffff" strokeWidth="2" fill="none">
                 <path d="M9 9h14v14H9z" />
                 <path d="M9 9l5-4h14l-5 4M23 23l5-4V5" />
               </g>
-              <g fill="#e6fffb">
+              <g fill="#ffffff">
                 <circle cx="9" cy="9" r="2.4" />
                 <circle cx="23" cy="9" r="2.4" />
                 <circle cx="9" cy="23" r="2.4" />

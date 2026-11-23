@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useBundle } from '../app/BundleContext';
-import { Callout, ErrorState, InfoTip, Loading } from '../components/ui';
+import { Callout, ErrorState, InfoTip, Loading, Notice } from '../components/ui';
 import {
   coverage,
   defaultColumns,
@@ -31,7 +31,7 @@ export function BundleClosed() {
   );
 }
 
-/** What a reader must know before reading the numbers: fixed texts of the Studio, then the notices of the bundle. */
+/** What a reader must know before reading the numbers: one visible sentence; the fixed texts of the Studio and the notices of the bundle folded under it. */
 export function BundleNotices({ bundle }: { bundle: LoadedBundle }) {
   const groups = new Set(bundle.manifest.columns.map((c) => c.group));
   const own: string[] = [];
@@ -39,23 +39,23 @@ export function BundleNotices({ bundle }: { bundle: LoadedBundle }) {
   if (groups.has('score')) own.push(G.scoreComponents);
   own.push(G.noConductivity);
   return (
-    <Callout kind="science" title="Read this before the numbers">
+    <Notice lead={G.bundleLead} more="What the values mean">
       <ul>
         {own.map((t) => (
           <li key={t}>{t}</li>
         ))}
       </ul>
       {bundle.manifest.notices.length > 0 ? (
-        <details className="disclosure">
-          <summary>Notices stored in the bundle ({bundle.manifest.notices.length})</summary>
+        <>
+          <p className="small">Notices stored in the bundle:</p>
           <ul className="small">
             {bundle.manifest.notices.map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>
-        </details>
+        </>
       ) : null}
-    </Callout>
+    </Notice>
   );
 }
 

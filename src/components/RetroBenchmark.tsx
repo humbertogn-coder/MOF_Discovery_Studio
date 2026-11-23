@@ -50,7 +50,7 @@ export default function RetroBenchmark() {
       layout: {
         xaxis: { title: { text: 'Labels acquired (simulated DFT budget)' } },
         yaxis: { title: { text: METRIC_LABEL[metric] }, rangemode: 'tozero' },
-        shapes: [{ type: 'line', x0: r.study_budget_labels, x1: r.study_budget_labels, yref: 'paper', y0: 0, y1: 1, line: { color: '#0f2237', width: 1, dash: 'dot' } }],
+        shapes: [{ type: 'line', x0: r.study_budget_labels, x1: r.study_budget_labels, yref: 'paper', y0: 0, y1: 1, line: { color: '#1d1d1f', width: 1, dash: 'dot' } }],
         annotations: [{ x: r.study_budget_labels, y: 1, yref: 'paper', text: `study budget (${r.study_budget_labels})`, showarrow: false, xanchor: 'left', font: { size: 11 } }],
         legend: { orientation: 'h', y: -0.25, x: 0 },
       },
