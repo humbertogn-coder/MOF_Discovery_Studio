@@ -68,8 +68,8 @@ function DosChart({ path, gap }: { path: string; gap: number | null }) {
       tr.push({ type: 'scatter', mode: 'lines', name: g.label, legendgroup: g.key, x: dos.E, y: up, line: { color: g.color, width: 2 }, hovertemplate: `${g.label} %{y:.2f}<extra></extra>` });
       if (dn) tr.push({ type: 'scatter', mode: 'lines', name: g.label, legendgroup: g.key, showlegend: false, x: dos.E, y: dn.map((v) => -v), line: { color: g.color, width: 2 }, hoverinfo: 'skip' });
     }
-    const shapes: object[] = [{ type: 'line', x0: 0, x1: 0, yref: 'paper', y0: 0, y1: 1, line: { color: '#0f2237', width: 1, dash: 'dot' } }];
-    if (gap != null) shapes.push({ type: 'line', x0: gap, x1: gap, yref: 'paper', y0: 0, y1: 1, line: { color: '#0f2237', width: 1, dash: 'dot' } });
+    const shapes: object[] = [{ type: 'line', x0: 0, x1: 0, yref: 'paper', y0: 0, y1: 1, line: { color: '#1d1d1f', width: 1, dash: 'dot' } }];
+    if (gap != null) shapes.push({ type: 'line', x0: gap, x1: gap, yref: 'paper', y0: 0, y1: 1, line: { color: '#1d1d1f', width: 1, dash: 'dot' } });
     return {
       data: tr,
       layout: {

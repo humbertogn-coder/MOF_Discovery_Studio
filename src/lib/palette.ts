@@ -16,7 +16,7 @@ export function categoryStyle(all: string[]): Map<string, { color: string; symbo
 }
 
 export const STATUS_COLOR = {
-  accepted: '#0d9488',
+  accepted: '#500000',
   rejected: '#b45309',
   not_available: '#94a3b8',
   ambiguous: '#7c3aed',

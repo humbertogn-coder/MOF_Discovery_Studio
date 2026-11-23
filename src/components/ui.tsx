@@ -119,6 +119,21 @@ export function Callout({ kind = 'note', title, children }: { kind?: 'note' | 'w
   );
 }
 
+/** A scientific notice: one sentence that is always visible, the rest folded under "More". */
+export function Notice({ lead, children, more = 'More' }: { lead: ReactNode; children?: ReactNode; more?: string }) {
+  return (
+    <div className="notice">
+      <p>{lead}</p>
+      {children ? (
+        <details>
+          <summary>{more}</summary>
+          {children}
+        </details>
+      ) : null}
+    </div>
+  );
+}
+
 export function Loading({ what = 'data' }: { what?: string }) {
   return (
     <div className="state" role="status" aria-live="polite">

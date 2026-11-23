@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../app/DataContext';
 import { PlotlyChart } from '../components/PlotlyChart';
-import { Callout, DftBadge, ErrorState, InfoTip, Loading, Num } from '../components/ui';
+import { Callout, DftBadge, ErrorState, InfoTip, Loading, Notice, Num } from '../components/ui';
 import { applyEligibility, ELIGIBILITY_LABEL, eligibilityReason, rankPool, selectBatch, SKIP_LABEL, type Caps, type ScoredRow, type Weights } from '../lib/acquisition';
 import { download, toCsv } from '../lib/csv';
 import { candidatePath, loadActiveLearning } from '../lib/data';
@@ -141,7 +141,9 @@ export default function ActiveLearning() {
         <h1>Active Learning Explorer</h1>
         <p className="lede-sm">How the study chose which frameworks to send to DFT — replayed from the recorded inputs, and open for what-if exploration on frozen predictions.</p>
       </header>
-      <Callout kind="science" title="Interactive replay, not new science">{G.replay} {G.acquisition}</Callout>
+      <Notice lead={G.replay}>
+        <p>{G.acquisition}</p>
+      </Notice>
 
       <div className="tabs" role="tablist" aria-label="Iteration">
         {al.iterations.map((x, i) => (

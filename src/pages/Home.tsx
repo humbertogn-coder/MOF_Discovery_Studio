@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useData } from '../app/DataContext';
 import { PlotlyChart } from '../components/PlotlyChart';
-import { Callout, ErrorState, InfoTip, Loading } from '../components/ui';
+import { ErrorState, InfoTip, Loading, Notice } from '../components/ui';
 import { candidatePath } from '../lib/data';
 import { G } from '../lib/guardrails';
 import { shortDate } from '../lib/format';
@@ -29,14 +29,14 @@ function GapByTopology({ cs }: { cs: Candidate[] }) {
           x: pred.map(xi), y: pred.map((c) => c.prediction!.mu_eV), customdata: pred.map((c) => c.slug),
           text: pred.map((c) => `${c.id}<br>predicted μ = ${c.prediction!.mu_eV!.toFixed(2)} eV${c.prediction!.is_ood ? ' · OOD' : ''}`),
           hovertemplate: '%{text}<extra></extra>',
-          marker: { size: 8, color: '#2a78d6', opacity: 0.55, line: { width: 1, color: '#fcfcfb' } },
+          marker: { size: 8, color: '#8e8e93', opacity: 0.55, line: { width: 1, color: '#ffffff' } },
         },
         {
           type: 'scatter', mode: 'markers', name: 'Accepted DFT label (PBE-D3)',
           x: acc.map(xi), y: acc.map((c) => c.dft.gap_eV), customdata: acc.map((c) => c.slug),
           text: acc.map((c) => `${c.id}<br>accepted DFT gap = ${c.dft.gap_eV!.toFixed(2)} eV (iteration ${c.dft.iteration})`),
           hovertemplate: '%{text}<extra></extra>',
-          marker: { size: 11, symbol: 'diamond', color: '#eb6834', line: { width: 2, color: '#fcfcfb' } },
+          marker: { size: 11, symbol: 'diamond', color: '#500000', line: { width: 2, color: '#ffffff' } },
         },
       ],
       layout: {
@@ -58,12 +58,11 @@ function GapByTopology({ cs }: { cs: Candidate[] }) {
 }
 
 const STEPS = [
-  { t: 'PORMAKE assembly', d: 'Hypothetical frameworks built from audited carboxylate nodes, carboxylate-free linkers and five nets.' },
-  { t: 'Structural QC', d: 'Overlaps, short contacts, connectivity, H/C coordination, composition and cell checks.' },
-  { t: 'Zeo++ descriptors', d: 'Pore limiting and largest cavity diameters (PLD, LCD) plus density.' },
-  { t: 'ML prediction', d: 'ExtraTrees ensemble trained on QMOF PBE gaps predicts μ, σ_tree, σ_seed and an OOD flag.' },
-  { t: 'Active learning', d: 'Acquisition score with topology novelty, OOD penalty and diversity caps selects DFT batches.' },
-  { t: 'DFT validation', d: 'VASP PBE-D3(BJ) relaxations and statics; labels accepted only under explicit rules.' },
+  { t: 'Assemble', d: 'PORMAKE builds hypothetical frameworks from audited nodes, linkers and nets.' },
+  { t: 'Check', d: 'Structural QC and Zeo++ pore descriptors.' },
+  { t: 'Predict', d: 'A model trained on QMOF PBE gaps estimates each band gap and flags extrapolation.' },
+  { t: 'Select', d: 'Active learning picks which frameworks to compute next.' },
+  { t: 'Compute', d: 'VASP PBE-D3(BJ); labels accepted only under explicit rules.' },
 ];
 
 export default function Home() {
@@ -74,55 +73,51 @@ export default function Home() {
   const topologies = new Set(candidates.map((c) => c.topology)).size;
   const metals = new Set(candidates.map((c) => c.metal)).size;
   const iterations = Object.keys(manifest.dft_by_iteration).length;
-  const counts = [manifest.catalogue_enumerated, manifest.record_count, candidates.filter((c) => c.structure.pld_A != null).length, manifest.records_with_prediction, manifest.records_with_dft_run, manifest.records_with_accepted_dft];
-  const countLabel = ['enumerated', 'passed QC', 'with PLD/LCD', 'predicted', 'sent to DFT', 'accepted labels'];
 
   return (
     <>
       <section className="hero">
-        <div className="wrap hero-inner">
-          <p className="eyebrow">Research data explorer · v{manifest.app_release}</p>
+        <div className="wrap">
           <h1>Explore, compare, and prioritize 3D MOF candidates.</h1>
           <p className="lede">
-            MOF Discovery Studio opens up the data of an active-learning study of hypothetical three-dimensional metal–organic frameworks: {manifest.record_count} QC-passed structures with predicted PBE band gaps, model spread and out-of-distribution flags, {manifest.records_with_accepted_dft} DFT labels accepted under the study criteria, and the acquisition logic that chose which frameworks to compute.
+            Data of an active-learning study of hypothetical three-dimensional metal–organic frameworks: {manifest.record_count} screened structures, their predicted band gaps, and {manifest.records_with_accepted_dft} DFT labels.
           </p>
           <div className="hero-cta">
             <Link className="btn btn-primary" to="/explore">
               Explore MOFs
             </Link>
-            <Link className="btn btn-ghost-light" to="/active-learning">
-              How candidates were prioritized
+            <Link className="btn btn-ghost" to="/active-learning">
+              How candidates were chosen
             </Link>
           </div>
         </div>
       </section>
 
       <div className="wrap page">
-        <Callout kind="science" title="Read this first">
-          {G.headline} {G.hypothetical} Predicted values come from a machine-learning model; only the labelled DFT values were computed, and only for a small subset.
-        </Callout>
+        <Notice lead={G.headline}>
+          <p>
+            {G.hypothetical} Predicted values come from a machine-learning model; only the labelled DFT values were computed, and only for a small subset.
+          </p>
+        </Notice>
 
         <section aria-labelledby="snapshot-h" className="section">
-          <h2 id="snapshot-h">Dataset snapshot</h2>
+          <h2 id="snapshot-h" className="sr-only">Dataset</h2>
           <div className="stats">
-            <div className="stat"><span className="stat-n">{manifest.record_count}</span><span className="stat-l">QC-passed hypothetical frameworks <span className="muted">(of {manifest.catalogue_enumerated} enumerated)</span></span></div>
-            <div className="stat"><span className="stat-n">{topologies} · {metals}</span><span className="stat-l">topologies · metals</span></div>
-            <div className="stat"><span className="stat-n">{manifest.records_with_dft_run}</span><span className="stat-l">frameworks sent to DFT in {iterations} iterations</span></div>
-            <div className="stat stat-accent"><span className="stat-n">{manifest.records_with_accepted_dft}</span><span className="stat-l">accepted DFT labels <InfoTip text={G.dftAccepted} /></span></div>
-            <div className="stat"><span className="stat-n">{manifest.records_ood}</span><span className="stat-l">flagged out of distribution <InfoTip text={G.ood} /></span></div>
+            <div className="stat"><span className="stat-n">{manifest.record_count}</span><span className="stat-l">frameworks passed QC <span className="muted">(of {manifest.catalogue_enumerated})</span></span></div>
+            <div className="stat"><span className="stat-n">{manifest.records_with_dft_run}</span><span className="stat-l">sent to DFT in {iterations} rounds</span></div>
+            <div className="stat"><span className="stat-n">{manifest.records_with_accepted_dft}</span><span className="stat-l">accepted DFT labels <InfoTip text={G.dftAccepted} /></span></div>
+            <div className="stat"><span className="stat-n">{manifest.records_ood}</span><span className="stat-l">out of distribution <InfoTip text={G.ood} /></span></div>
           </div>
           <p className="small muted">
-            Counts are computed from the exported data (snapshot <code>{manifest.source_commit_hash.slice(0, 7)}</code>, {shortDate(manifest.source_commit_date)}; predictions from iteration {manifest.source_iteration}).
+            {topologies} topologies, {metals} metals. Snapshot <code>{manifest.source_commit_hash.slice(0, 7)}</code> ({shortDate(manifest.source_commit_date)}), predictions of iteration {manifest.source_iteration}.
           </p>
         </section>
 
         <section aria-labelledby="workflow-h" className="section">
-          <h2 id="workflow-h">Research workflow</h2>
+          <h2 id="workflow-h">How the study worked</h2>
           <ol className="workflow">
-            {STEPS.map((s, i) => (
+            {STEPS.map((s) => (
               <li key={s.t}>
-                <span className="wf-n">{counts[i]}</span>
-                <span className="wf-c">{countLabel[i]}</span>
                 <strong>{s.t}</strong>
                 <span className="wf-d">{s.d}</span>
               </li>
@@ -135,35 +130,38 @@ export default function Home() {
           <GapByTopology cs={candidates} />
         </section>
 
-        <section className="section grid-2">
-          <div>
-            <h2>What this site does — and does not do</h2>
-            <ul className="ticks">
-              <li>Shows the real generated structures, their QC status, descriptors and model predictions.</li>
-              <li>Separates predictions, accepted DFT labels, non-accepted DFT runs and missing data.</li>
-              <li>Replays the recorded active-learning selections and lets you explore the acquisition weights on frozen predictions.</li>
-            </ul>
-            <ul className="crosses">
-              <li>It does not run new DFT, retrain the model or generate new frameworks.</li>
-              <li>It does not predict conductivity, stability or synthesisability.</li>
-            </ul>
+        <details className="about section">
+          <summary>About this data</summary>
+          <div className="grid-2">
+            <div>
+              <h3>What this site does and does not do</h3>
+              <ul className="ticks">
+                <li>Shows the generated structures, their QC status, descriptors and model predictions.</li>
+                <li>Keeps predictions, accepted DFT labels, non-accepted DFT runs and missing data apart.</li>
+                <li>Replays the recorded active-learning selections on frozen predictions.</li>
+              </ul>
+              <ul className="crosses">
+                <li>It does not run new DFT, retrain the model or generate new frameworks.</li>
+                <li>It does not predict conductivity, stability or synthesisability.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Level of theory</h3>
+              {manifest.context_statistics.map((s) => (
+                <p key={s.id} className="small">
+                  {s.text} <span className="muted">Source: {s.source}.</span>
+                </p>
+              ))}
+              <p className="small">
+                Source code and data:{' '}
+                <a href={manifest.source_repository_url} target="_blank" rel="noopener noreferrer">
+                  {manifest.source_repository_url.replace('https://', '')}
+                </a>
+                . {manifest.citation_status}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2>Level-of-theory context</h2>
-            {manifest.context_statistics.map((s) => (
-              <Callout key={s.id} kind="note">
-                {s.text} <span className="small muted">Source: {s.source}.</span>
-              </Callout>
-            ))}
-            <p className="small">
-              Source code and data:{' '}
-              <a href={manifest.source_repository_url} target="_blank" rel="noopener noreferrer">
-                {manifest.source_repository_url.replace('https://', '')}
-              </a>
-              . {manifest.citation_status}
-            </p>
-          </div>
-        </section>
+        </details>
       </div>
     </>
   );
